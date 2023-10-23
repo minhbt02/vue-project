@@ -7,6 +7,13 @@ export interface ITodoList {
   displayedTodos: Array<{ id: number, name: string, done: boolean }>;
   length: number;
   page: number;
+  setTodos(todos: Array<{ id: number, name: string, done: boolean }>): () => void;
+  setTodosLoaded(): () => void;
+  setNewId(id: number): () => void;
+  setFilteredTodos(filteredTodos: Array<{ id: number, name: string, done: boolean }>): () => void;
+  setDisplayedTodos(displayedTodos: Array<{ id: number, name: string, done: boolean }>): () => void;
+  setLength(length: number): () => void;
+  setPage(page: number): () => void;
   pageChange(): () => void;
   loadDataToView(): () => void;
   handleAddTodo(): () => void;
