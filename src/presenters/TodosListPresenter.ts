@@ -2,32 +2,32 @@ import { ITodoList } from "@/interfaces/ITodoList";
 import { Todo } from "@/models/Todo";
 
 export class TodosListPresenter {
-  constructor(private view: ITodoList, private model?: Todo) {}
+  constructor(private view: ITodoList, private model: Todo) {}
   public setModel(todo: any) {
-    const todoObject = new Todo(todo.id, todo.name, todo.done);
-    this.model = todoObject;
+    this.model.setId(todo.id);
+    this.model.setName(todo.name);
     this.model.setDone(todo.done);
   }
   public loadDataToView(): void {
-    try {
-      Todo.all().then(
+    Todo.all()
+      .then(
         (returnData: Array<{ id: number; name: string; done: boolean }>) => {
-          this.view.todos = returnData;
-          this.view.todosLoaded = true;
-          this.view.newId = this.findNewId();
+          this.view.setTodos(returnData);
+          this.view.setTodosLoaded();
+          this.view.setNewId(this.findNewId());
           this.handleChanges();
         }
-      );
-    } catch (error) {
-      console.log(error);
-    }
+      )
+      .catch((err) => {
+        console.log(err);
+      });
   }
   public handleChanges() {
-    this.view.filteredTodos = this.getFilteredTodos();
-    this.view.displayedTodos = this.getDisplayedTodos();
-    this.view.length = this.calcLength();
+    this.view.setFilteredTodos(this.getFilteredTodos());
+    this.view.setDisplayedTodos(this.getDisplayedTodos());
+    this.view.setLength(this.calcLength());
     if (this.view.displayedTodos.length === 0) {
-      this.view.page = this.view.length;
+      this.view.setPage(this.view.length);
       this.handleChanges();
     }
   }
@@ -75,7 +75,7 @@ export class TodosListPresenter {
   public removeTodo(todo: object): void {
     this.setModel(todo);
     if (this.model) {
-      this.view.todos = this.view.todos.filter((t: any) => t !== todo);
+      this.view.setTodos(this.view.todos.filter((t: any) => t !== todo));
       this.model.deleteTodo();
       this.handleChanges();
     } else {

@@ -3,15 +3,17 @@ import { Todo } from "@/models/Todo";
 
 export class AddTodoFormPresenter {
   constructor(private view: IAddTodoForm, private model: Todo) {}
-  public setModel(todo: Todo) {
-    this.model = todo;
+  public setName(name: string) {
+    this.model.setName(name);
   }
-  public newTodo() {
-    this.view.todos.push({
+  public addTodo() {
+    const todosCopy = this.view.todos.slice();
+    todosCopy.push({
       id: this.model.getId(),
       name: this.model.getName(),
       done: this.model.getDone(),
     });
     this.model.createTodo();
+    this.view.$emit("update:todos", todosCopy);
   }
 }
