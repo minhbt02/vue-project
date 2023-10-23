@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref } from "vue";
 import AuthOptions from "@/components/home/AuthOptions.vue";
 import LoginForm from "@/components/home/LoginForm.vue";
 import RegisterForm from "@/components/home/RegisterForm.vue";
