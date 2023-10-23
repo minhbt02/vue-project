@@ -4,14 +4,14 @@ import VuexPersist from "vuex-persist";
 export default createStore({
   state: {
     loggedIn: false,
-    str: "yes",
+    id: -1,
   },
   getters: {
     loggedIn(state) {
       return state.loggedIn;
     },
-    str(state) {
-      return state.str;
+    id(state) {
+      return state.id;
     },
   },
   mutations: {
@@ -20,6 +20,9 @@ export default createStore({
     },
     logout(state) {
       state.loggedIn = false;
+    },
+    identify(state, uid) {
+      state.id = uid;
     },
   },
   actions: {},
