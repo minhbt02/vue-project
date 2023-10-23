@@ -7,7 +7,7 @@
       <form
         action=""
         id="login-form"
-        @submit.prevent="onSubmit"
+        @submit.prevent="submitLogin"
         class="pt-5 w-100"
       >
         <div class="field w-100">
@@ -41,12 +41,13 @@
 </template>
 
 <script lang="ts">
-import { mapMutations, useStore } from "vuex";
+import { useStore } from "vuex";
 import { defineComponent, ref } from "vue";
 import { LoginFormPresenter } from "@/presenters/LoginFormPresenter";
 import { getCurrentInstance } from "vue";
 import { ComponentPublicInstance } from "vue";
 import { ILoginForm } from "@/interfaces/ILoginForm";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "LoginForm",
   props: {
@@ -55,42 +56,27 @@ export default defineComponent({
     loginSuccess: Boolean,
   },
   emits: ["update:login-chosen", "update:login-success"],
-  setup(_, context) {
+  setup() {
     const presenter = new LoginFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<ILoginForm>
     );
-    const id = ref("");
+    const id = ref();
     const username = ref("");
     const password = ref("");
     const store = useStore();
-    const login = () => {
-      store.commit("login");
-    }
+    const router = useRouter();
     const submitLogin = () => {
-      context.emit("update:login-success", true);
-      context.emit("update:login-chosen", false);
-      login();
-      
-    }
+      presenter.authenticate();
+    };
     return {
       presenter,
+      store,
+      router,
       id,
       username,
       password,
+      submitLogin,
     };
-  },
-  methods: {
-    ...mapMutations(["login"]),
-    onSubmit(e: Event) {
-      e.preventDefault();
-      this.$emit("update:login-success", true);
-      this.$emit("update:login-chosen", false);
-      this.login();
-      this.redirect();
-    },
-    redirect() {
-      this.$router.push({ name: "todos" });
-    },
   },
 });
 </script>

@@ -5,32 +5,32 @@
       <form
         action=""
         id="login-form"
-        @submit.prevent="onSubmit"
+        @submit.prevent="submitRegister"
         class="pt-5 w-100"
       >
         <div class="field w-100">
           <v-text-field
+            v-model="username"
             label="Username"
             hint="Enter your username"
-            @input="changeUsername"
             id="username"
           />
         </div>
         <div class="field">
           <v-text-field
+            v-model="password"
             label="Password"
             type="password"
             hint="Enter your password"
-            @input="changePassword"
             id="password"
           />
         </div>
         <div class="field">
           <v-text-field
+            v-model="passwordConfirm"
             label="Password Confirm"
             type="password"
             hint="Confirm your password"
-            @input="changePasswordConfirm"
             id="password-confirm"
           />
         </div>
@@ -48,50 +48,37 @@
 </template>
 
 <script lang="ts">
+import { IRegisterForm } from "@/interfaces/IRegisterForm";
+import { User } from "@/models/User";
+import { RegisterFormPresenter } from "@/presenters/RegisterFormPresenter";
+import { ComponentPublicInstance } from "vue";
+import { getCurrentInstance } from "vue";
 import { defineComponent, ref } from "vue";
 export default defineComponent({
   name: "RegisterForm",
   props: {
     registerChosen: Boolean,
-    username: String,
-    password: String,
-    passwordConfirm: String,
     back: Function,
   },
   setup() {
-    const usernameInput = ref("");
-    const passwordInput = ref("");
-    const passwordConfirmInput = ref("");
-    const changeUsername = (e: InputEvent) => {
-      let inputElement = e.target as HTMLInputElement;
-      usernameInput.value = inputElement.value;
-    };
-    const changePassword = (e: InputEvent) => {
-      let inputElement = e.target as HTMLInputElement;
-      passwordInput.value = inputElement.value;
-    };
-    const changePasswordConfirm = (e: InputEvent) => {
-      let inputElement = e.target as HTMLInputElement;
-      passwordConfirmInput.value = inputElement.value;
+    const id = ref(-1);
+    const username = ref("");
+    const password = ref("");
+    const presenter = new RegisterFormPresenter(
+      getCurrentInstance()?.proxy as ComponentPublicInstance<IRegisterForm>,
+      new User(id.value, username.value, password.value)
+    );
+    const passwordConfirm = ref("");
+    const submitRegister = () => {
+      presenter.newUser();
     };
     return {
-      usernameInput,
-      passwordInput,
-      passwordConfirmInput,
-      changeUsername,
-      changePassword,
-      changePasswordConfirm,
+      username,
+      password,
+      passwordConfirm,
+      presenter,
+      submitRegister,
     };
-  },
-  methods: {
-    onSubmit(e: Event) {
-      e.preventDefault();
-      this.$emit("update:username", this.usernameInput);
-      this.$emit("update:password", this.passwordInput);
-      this.$emit("update:password-confirm", this.passwordConfirmInput);
-      this.$emit("update:register-success", true);
-      this.$emit("update:register-chosen", false);
-    },
   },
 });
 </script>
