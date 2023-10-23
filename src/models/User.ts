@@ -25,12 +25,12 @@ export class User {
     this.password = password;
   }
   public all(): Promise<
-    Array<{ id: number; username: string; password: boolean }>
+    Array<{ id: number; username: string; password: string }>
   > {
     return loadData("user");
   }
   public static all(): Promise<
-    Array<{ id: number; username: string; password: boolean }>
+    Array<{ id: number; username: string; password: string }>
   > {
     return loadData("user");
   }
