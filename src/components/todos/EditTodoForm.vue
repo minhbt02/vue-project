@@ -46,18 +46,17 @@ export default defineComponent({
     },
   },
   emits: ["update:todos"],
-  setup(props, context) {
+  setup(props) {
     const presenter = new EditTodoFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IEditTodoForm>,
       new Todo(props.todo.id, props.todo.name, props.todo.done)
     );
     const name = ref(props.todo.name);
     const nameChange = () => {
-      presenter.setModel(new Todo(props.todo.id, name.value, props.todo.done));
+      presenter.setName(name.value);
     };
     const saveTodo = () => {
       presenter.updateTodo();
-      context.emit("update:todos", props.todos);
     };
     return { name, presenter, nameChange, saveTodo };
   },

@@ -5,7 +5,7 @@
       width="400"
     >
       <h3>Todo #{{ newId }}</h3>
-      <form action="" @submit.prevent="newTodo">
+      <form action="" @submit.prevent="submitAddTodo">
         <v-card>
           <v-text-field
             v-model="name"
@@ -43,20 +43,19 @@ export default defineComponent({
     },
   },
   emits: ["update:todos"],
-  setup(props, context) {
+  setup(props) {
     const name = ref("");
     const presenter = new AddTodoFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IAddTodoForm>,
       new Todo(props.newId, name.value, false)
     );
     const nameChange = () => {
-      presenter.setModel(new Todo(props.newId, name.value, false));
+      presenter.setName(name.value);
     };
-    const newTodo = () => {
-      presenter.newTodo();
-      context.emit("update:todos", props.todos);
+    const submitAddTodo = () => {
+      presenter.addTodo();
     };
-    return { name, presenter, nameChange, newTodo };
+    return { name, presenter, nameChange, submitAddTodo };
   },
 });
 </script>

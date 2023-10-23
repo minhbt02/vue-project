@@ -56,15 +56,19 @@
           </v-list-item>
         </v-list>
       </v-sheet>
-      <v-pagination
-        v-model="page"
-        :length="length"
-        rounded="circle"
-        class="pagination"
-        @update:model-value="pageChange()"
-      ></v-pagination>
+      <v-sheet class="bg-grey-lighten-2 rounded-xl" height="60">
+        <v-pagination
+          v-model="page"
+          :length="length"
+          rounded="circle"
+          class="pagination"
+          @update:model-value="pageChange()"
+        ></v-pagination>
+      </v-sheet>
     </div>
-    <v-sheet class="bg-grey-lighten-2 rounded-xl" height="400" v-else></v-sheet>
+    <v-sheet class="bg-grey-lighten-2 rounded-xl" height="400" v-else>
+      <h3 class="text-center">Failed To Load Todos</h3>
+    </v-sheet>
     <div class="d-flex justify-center align-center">
       <v-btn
         @click="showTodoForm = true"
@@ -112,12 +116,14 @@ import { TodosListPresenter } from "@/presenters/TodosListPresenter";
 import { ComponentPublicInstance } from "vue";
 import { ITodoList } from "@/interfaces/ITodoList";
 import { onMounted } from "vue";
+import { Todo } from "@/models/Todo";
 export default defineComponent({
   name: "TodosList",
   setup() {
     const todos = ref();
     const presenter = new TodosListPresenter(
-      getCurrentInstance()?.proxy as ComponentPublicInstance<ITodoList>
+      getCurrentInstance()?.proxy as ComponentPublicInstance<ITodoList>,
+      new Todo(-1, "", false)
     );
     const todosLoaded = ref(false);
     const todoItem = ref();
@@ -132,6 +138,33 @@ export default defineComponent({
     onMounted(() => {
       loadDataToView();
     });
+    const setTodos = (
+      todosList: Array<{ id: number; name: string; done: boolean }>
+    ) => {
+      todos.value = todosList;
+    };
+    const setTodosLoaded = () => {
+      todosLoaded.value = true;
+    };
+    const setNewId = (id: number) => {
+      newId.value = id;
+    };
+    const setFilteredTodos = (
+      newfilteredTodos: Array<{ id: number; name: string; done: boolean }>
+    ) => {
+      filteredTodos.value = newfilteredTodos;
+    };
+    const setDisplayedTodos = (
+      newDisplayedTodos: Array<{ id: number; name: string; done: boolean }>
+    ) => {
+      displayedTodos.value = newDisplayedTodos;
+    };
+    const setLength = (newLength: number) => {
+      length.value = newLength;
+    };
+    const setPage = (newPage: number) => {
+      page.value = newPage;
+    };
     const pageChange = () => {
       presenter.handleChanges();
     };
@@ -167,6 +200,13 @@ export default defineComponent({
       page,
       newId,
       loadDataToView,
+      setTodos,
+      setTodosLoaded,
+      setNewId,
+      setFilteredTodos,
+      setDisplayedTodos,
+      setLength,
+      setPage,
       pageChange,
       handleAddTodo,
       handleEditTodo,
