@@ -24,14 +24,8 @@ export class Todo {
   public setDone(done: boolean): void {
     this.done = done;
   }
-  public all():
-    | Promise<Array<{ id: number; name: string; done: boolean }>>
-    | undefined {
-    try {
-      return loadData("todos");
-    } catch (err) {
-      console.log(err);
-    }
+  public all(): Promise<Array<{ id: number; name: string; done: boolean }>> {
+    return loadData("todos");
   }
   public static all(): Promise<
     Array<{ id: number; name: string; done: boolean }>
