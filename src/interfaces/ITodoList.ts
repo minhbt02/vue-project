@@ -9,6 +9,9 @@ export interface ITodoList {
   page: number;
   pageChange(): () => void;
   loadDataToView(): () => void;
+  handleAddTodo(): () => void;
+  handleEditTodo(): () => void;
   handleCompletedTodo(todo: object): () => void;
   handleDeletedTodo(todo: object): () => void;
+  handleShowCompleted(): () => void;
 }

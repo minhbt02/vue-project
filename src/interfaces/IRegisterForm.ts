@@ -1,12 +1,11 @@
 import { Router } from "vue-router";
 import { Store } from "vuex";
 
-export interface ILoginForm {
+export interface IRegisterForm {
   id: number,
   username: string,
   password: string,
-  store: Store<any>,
-  router: Router,
+  passwordConfirm: string,
   $emit(event: string, ...args: any[]): () => void;
-  submitLogin(): () => void;
+  submitRegister(): () => void;
 }
