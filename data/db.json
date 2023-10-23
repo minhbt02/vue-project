@@ -1,0 +1,79 @@
+{
+  "todos": [
+    {
+      "id": 0,
+      "name": "Learn TypeScript",
+      "done": true,
+      "deleted": false
+    },
+    {
+      "id": 2,
+      "name": "Learn Golang",
+      "done": true,
+      "deleted": false
+    },
+    {
+      "id": 4,
+      "name": "Learn Python",
+      "done": true,
+      "deleted": false
+    },
+    {
+      "id": 5,
+      "name": "Learn Ruby",
+      "done": false,
+      "deleted": false
+    },
+    {
+      "id": 6,
+      "name": "Learn Ruby",
+      "done": false,
+      "deleted": false
+    },
+    {
+      "id": 7,
+      "name": "Learn Ruby",
+      "done": true,
+      "deleted": false
+    },
+    {
+      "id": 8,
+      "name": "Learn Rust",
+      "done": false,
+      "deleted": false
+    },
+    {
+      "id": 9,
+      "name": "Learn Ruby",
+      "done": true,
+      "deleted": false
+    },
+    {
+      "id": 12,
+      "name": "Learn C",
+      "done": false
+    },
+    {
+      "id": 13,
+      "name": "Learn C#",
+      "done": false
+    },
+    {
+      "id": 14,
+      "name": "Learn C#",
+      "done": true
+    }
+  ],
+  "user": [
+    {
+      "id": 0,
+      "username": "mikesov",
+      "password": "123456"
+    },
+    {
+      "id": 1,
+      "username": "infantannihilator",
+      "password": "123456"
+    }
+  ]
+}
