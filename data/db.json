@@ -74,6 +74,16 @@
       "id": 1,
       "username": "infantannihilator",
       "password": "123456"
+    },
+    {
+      "id": 2,
+      "username": "mikesovereignborn",
+      "password": "123456"
+    },
+    {
+      "id": 3,
+      "username": "minhbt",
+      "password": "123456"
     }
   ]
 }
