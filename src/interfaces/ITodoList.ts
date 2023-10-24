@@ -1,12 +1,10 @@
 export interface ITodoList {
-  todos: Array<{ id: number, name: string, done: boolean }>;
-  todosLoaded: boolean;
-  newId: number;
-  showCompleted: boolean;
-  filteredTodos: Array<{ id: number, name: string, done: boolean }>;
-  displayedTodos: Array<{ id: number, name: string, done: boolean }>;
-  length: number;
-  page: number;
+  getTodos(): Array<{ id: number, name: string, done: boolean }>;
+  getShowCompleted(): boolean;
+  getFilteredTodos(): Array<{ id: number, name: string, done: boolean }>;
+  getDisplayedTodos(): Array<{ id: number, name: string, done: boolean }>;
+  getLength(): number;
+  getPage(): number;
   setTodos(todos: Array<{ id: number, name: string, done: boolean }>): () => void;
   setTodosLoaded(): () => void;
   setNewId(id: number): () => void;
@@ -14,6 +12,7 @@ export interface ITodoList {
   setDisplayedTodos(displayedTodos: Array<{ id: number, name: string, done: boolean }>): () => void;
   setLength(length: number): () => void;
   setPage(page: number): () => void;
+  getTodos(): () => void;
   pageChange(): () => void;
   loadDataToView(): () => void;
   handleAddTodo(): () => void;
