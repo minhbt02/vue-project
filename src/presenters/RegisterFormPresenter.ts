@@ -30,7 +30,7 @@ export class RegisterFormPresenter {
               this.view.getPassword()
             );
             this.model.createUser();
-            this.view.store.commit("register");
+            this.view.getStore().commit("register");
             this.view.$emit("update:register-chosen", false);
           } else {
             console.log("Passwords don't match");

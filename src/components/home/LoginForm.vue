@@ -64,6 +64,12 @@ export default defineComponent({
     const password = ref("");
     const store = useStore();
     const router = useRouter();
+    const getStore = () => {
+      return store;
+    };
+    const getRouter = () => {
+      return router;
+    };
     const submitLogin = () => {
       presenter.authenticate();
     };
@@ -74,6 +80,8 @@ export default defineComponent({
       id,
       username,
       password,
+      getStore,
+      getRouter,
       submitLogin,
     };
   },

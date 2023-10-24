@@ -15,8 +15,8 @@ export class LoginFormPresenter {
           })
         ) {
           this.view.$emit("update:login-chosen", false);
-          this.view.store.commit("login", this.view.id);
-          this.view.router.push({ name: "todos" });
+          this.view.getStore().commit("login", this.view.id);
+          this.view.getRouter().push({ name: "todos" });
         } else {
           this.view.$emit("update:login-chosen", false);
         }

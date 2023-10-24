@@ -5,7 +5,7 @@ export interface IRegisterForm {
   getUsername(): string,
   getPassword(): string,
   getPasswordConfirm(): string,
-  store: Store<any>,
+  getStore(): Store<any>,
   $emit(event: string, ...args: any[]): () => void;
   submitRegister(): () => void;
 }

@@ -82,6 +82,9 @@ export default defineComponent({
     const getPasswordConfirm = () => {
       return passwordConfirm.value;
     };
+    const getStore = () => {
+      return store;
+    };
     const submitRegister = () => {
       presenter.newUser();
     };
@@ -95,6 +98,7 @@ export default defineComponent({
       getUsername,
       getPassword,
       getPasswordConfirm,
+      getStore,
       submitRegister,
     };
   },
