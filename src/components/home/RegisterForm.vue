@@ -54,6 +54,7 @@ import { RegisterFormPresenter } from "@/presenters/RegisterFormPresenter";
 import { ComponentPublicInstance } from "vue";
 import { getCurrentInstance } from "vue";
 import { defineComponent, ref } from "vue";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "RegisterForm",
   props: {
@@ -64,11 +65,23 @@ export default defineComponent({
     const id = ref(-1);
     const username = ref("");
     const password = ref("");
+    const store = useStore();
     const presenter = new RegisterFormPresenter(
-      getCurrentInstance()?.proxy as ComponentPublicInstance<IRegisterForm>,
-      new User(id.value, username.value, password.value)
+      getCurrentInstance()?.proxy as ComponentPublicInstance<IRegisterForm>
     );
     const passwordConfirm = ref("");
+    const getId = () => {
+      return id.value;
+    };
+    const getUsername = () => {
+      return username.value;
+    };
+    const getPassword = () => {
+      return password.value;
+    };
+    const getPasswordConfirm = () => {
+      return passwordConfirm.value;
+    };
     const submitRegister = () => {
       presenter.newUser();
     };
@@ -76,7 +89,12 @@ export default defineComponent({
       username,
       password,
       passwordConfirm,
+      store,
       presenter,
+      getId,
+      getUsername,
+      getPassword,
+      getPasswordConfirm,
       submitRegister,
     };
   },

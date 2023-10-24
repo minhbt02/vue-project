@@ -52,13 +52,19 @@ export default defineComponent({
       new Todo(props.todo.id, props.todo.name, props.todo.done)
     );
     const name = ref(props.todo.name);
+    const getTodos = () => {
+      return props.todos;
+    };
+    const getIndex = () => {
+      return props.index;
+    };
     const nameChange = () => {
       presenter.setName(name.value);
     };
     const saveTodo = () => {
       presenter.updateTodo();
     };
-    return { name, presenter, nameChange, saveTodo };
+    return { name, presenter, getTodos, getIndex, nameChange, saveTodo };
   },
 });
 </script>

@@ -122,8 +122,7 @@ export default defineComponent({
   setup() {
     const todos = ref();
     const presenter = new TodosListPresenter(
-      getCurrentInstance()?.proxy as ComponentPublicInstance<ITodoList>,
-      new Todo(-1, "", false)
+      getCurrentInstance()?.proxy as ComponentPublicInstance<ITodoList>
     );
     const todosLoaded = ref(false);
     const todoItem = ref();
@@ -164,6 +163,24 @@ export default defineComponent({
     };
     const setPage = (newPage: number) => {
       page.value = newPage;
+    };
+    const getTodos = () => {
+      return todos.value;
+    };
+    const getShowCompleted = () => {
+      return showCompleted.value;
+    };
+    const getFilteredTodos = () => {
+      return filteredTodos.value;
+    };
+    const getDisplayedTodos = () => {
+      return displayedTodos.value;
+    };
+    const getLength = () => {
+      return length.value;
+    };
+    const getPage = () => {
+      return page.value;
     };
     const pageChange = () => {
       presenter.handleChanges();
@@ -207,6 +224,12 @@ export default defineComponent({
       setDisplayedTodos,
       setLength,
       setPage,
+      getTodos,
+      getShowCompleted,
+      getFilteredTodos,
+      getDisplayedTodos,
+      getLength,
+      getPage,
       pageChange,
       handleAddTodo,
       handleEditTodo,

@@ -53,7 +53,6 @@ export default defineComponent({
   props: {
     loginChosen: Boolean,
     back: Function,
-    loginSuccess: Boolean,
   },
   emits: ["update:login-chosen", "update:login-success"],
   setup() {

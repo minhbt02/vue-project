@@ -30,6 +30,7 @@ import { AddTodoFormPresenter } from "@/presenters/AddTodoFormPresenter";
 import { getCurrentInstance } from "vue";
 import { ComponentPublicInstance } from "vue";
 import { IAddTodoForm } from "@/interfaces/IAddTodoForm";
+import { onMounted } from "vue";
 export default defineComponent({
   name: "AddTodoForm",
   props: {
@@ -46,16 +47,35 @@ export default defineComponent({
   setup(props) {
     const name = ref("");
     const presenter = new AddTodoFormPresenter(
-      getCurrentInstance()?.proxy as ComponentPublicInstance<IAddTodoForm>,
-      new Todo(props.newId, name.value, false)
+      getCurrentInstance()?.proxy as ComponentPublicInstance<IAddTodoForm>
     );
+    onMounted(() => {
+      presenter.setModel(props.newId, name.value);
+    });
+    const getTodos = () => {
+      return props.todos;
+    };
+    const getNewId = () => {
+      return props.newId;
+    };
+    const getName = () => {
+      return name.value;
+    };
     const nameChange = () => {
       presenter.setName(name.value);
     };
     const submitAddTodo = () => {
       presenter.addTodo();
     };
-    return { name, presenter, nameChange, submitAddTodo };
+    return {
+      name,
+      presenter,
+      getTodos,
+      getNewId,
+      getName,
+      nameChange,
+      submitAddTodo,
+    };
   },
 });
 </script>
