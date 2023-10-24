@@ -14,13 +14,10 @@ export class LoginFormPresenter {
             );
           })
         ) {
-          this.view.$emit("update:login-success", true);
           this.view.$emit("update:login-chosen", false);
-          this.view.store.commit("login");
-          this.view.store.commit("identify", this.view.id);
+          this.view.store.commit("login", this.view.id);
           this.view.router.push({ name: "todos" });
         } else {
-          this.view.$emit("update:login-success", false);
           this.view.$emit("update:login-chosen", false);
         }
       })

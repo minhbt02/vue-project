@@ -2,7 +2,12 @@ import { ITodoList } from "@/interfaces/ITodoList";
 import { Todo } from "@/models/Todo";
 
 export class TodosListPresenter {
-  constructor(private view: ITodoList, private model: Todo) {}
+  private view: ITodoList;
+  private model: Todo;
+  constructor(view: ITodoList, model: Todo | null = null) {
+    this.view = view;
+    this.model = model ?? new Todo(-1, "", false);
+  }
   public setModel(todo: any) {
     this.model.setId(todo.id);
     this.model.setName(todo.name);
@@ -23,42 +28,42 @@ export class TodosListPresenter {
       });
   }
   public handleChanges() {
-    this.view.setFilteredTodos(this.getFilteredTodos());
-    this.view.setDisplayedTodos(this.getDisplayedTodos());
+    this.view.setFilteredTodos(this.calcFilteredTodos());
+    this.view.setDisplayedTodos(this.calcDisplayedTodos());
     this.view.setLength(this.calcLength());
-    if (this.view.displayedTodos.length === 0) {
-      this.view.setPage(this.view.length);
+    if (this.view.getDisplayedTodos().length === 0) {
+      this.view.setPage(this.view.getLength());
       this.handleChanges();
     }
   }
-  public getFilteredTodos(): Array<{
+  public calcFilteredTodos(): Array<{
     id: number;
     name: string;
     done: boolean;
   }> {
-    return this.view.showCompleted
-      ? this.view.todos
-      : this.view.todos.filter((t: any) => !t.done);
+    return this.view.getShowCompleted()
+      ? this.view.getTodos()
+      : this.view.getTodos().filter((t: any) => !t.done);
   }
-  public getDisplayedTodos(): Array<{
+  public calcDisplayedTodos(): Array<{
     id: number;
     name: string;
     done: boolean;
   }> {
-    const todosCopy = this.view.filteredTodos.slice();
-    const pageIndex = this.view.page > 0 ? this.view.page : 1;
+    const todosCopy = this.view.getFilteredTodos().slice();
+    const pageIndex = this.view.getPage() > 0 ? this.view.getPage() : 1;
     const start = (pageIndex - 1) * 4;
     const end = pageIndex * 4;
     return todosCopy.slice(start, end);
   }
   public calcLength(): number {
-    return Math.ceil(this.view.filteredTodos.length / 4);
+    return Math.ceil(this.view.getFilteredTodos().length / 4);
   }
   public findNewId(): number {
-    let max = Number(this.view.todos[0].id);
-    for (let i = 0; i < this.view.todos.length - 1; i++) {
-      if (this.view.todos[i].id < this.view.todos[i + 1].id) {
-        max = Number(this.view.todos[i + 1].id);
+    let max = Number(this.view.getTodos()[0].id);
+    for (let i = 0; i < this.view.getTodos().length - 1; i++) {
+      if (this.view.getTodos()[i].id < this.view.getTodos()[i + 1].id) {
+        max = Number(this.view.getTodos()[i + 1].id);
       }
     }
     return max + 1;
@@ -75,7 +80,7 @@ export class TodosListPresenter {
   public removeTodo(todo: object): void {
     this.setModel(todo);
     if (this.model) {
-      this.view.setTodos(this.view.todos.filter((t: any) => t !== todo));
+      this.view.setTodos(this.view.getTodos().filter((t: any) => t !== todo));
       this.model.deleteTodo();
       this.handleChanges();
     } else {

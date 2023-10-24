@@ -2,23 +2,35 @@ import { IRegisterForm } from "@/interfaces/IRegisterForm";
 import { User } from "@/models/User";
 
 export class RegisterFormPresenter {
-  constructor(private view: IRegisterForm, private model: User) {}
+  private view: IRegisterForm;
+  private model: User;
+  constructor(view: IRegisterForm, model: User | null = null) {
+    this.view = view;
+    this.model = model ?? new User(-1, "", "");
+  }
+  public setModel(id: number, username: string, password: string) {
+    this.model.setId(id);
+    this.model.setUsername(username);
+    this.model.setPassword(password);
+  }
   public newUser() {
     try {
       User.all().then((returnData) => {
         if (
           returnData.find((element) => {
-            return this.view.username === element.username;
+            return this.view.getUsername() === element.username;
           })
         ) {
           console.log("Existed username");
         } else {
-          if (this.view.password === this.view.passwordConfirm) {
-            this.model.setId(this.findNewId(returnData));
-            this.model.setUsername(this.view.username);
-            this.model.setPassword(this.view.password);
+          if (this.view.getPassword() === this.view.getPasswordConfirm()) {
+            this.setModel(
+              this.findNewId(returnData),
+              this.view.getUsername(),
+              this.view.getPassword()
+            );
             this.model.createUser();
-            this.view.$emit("update:register-success", true);
+            this.view.store.commit("register");
             this.view.$emit("update:register-chosen", false);
           } else {
             console.log("Passwords don't match");
