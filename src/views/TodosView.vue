@@ -3,11 +3,11 @@
     <h1 class="pt-6">🧾 Todos</h1>
     <div
       class="d-flex justify-center align-center px-16 pt-5 flex-column"
-      v-if="loggedIn"
+      v-if="store.state.loggedIn"
     >
       <TodosList />
       <v-btn
-        @click="logout"
+        @click="store.commit('logout')"
         class="mt-5 h-15 w-25 text-h6"
         color="teal-lighten-1"
       >
@@ -24,24 +24,33 @@
         Login
       </v-btn>
     </div>
+    <PopUpNotification
+      type="success"
+      message="Successfully logged in!"
+      v-if="loginSuccess"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters, mapMutations } from "vuex";
-import { TodosList } from "@/components";
+import { useStore } from "vuex";
+import { TodosList, PopUpNotification } from "@/components";
+import { useRouter } from "vue-router";
+import { computed } from "vue";
 export default defineComponent({
   name: "TodosView",
-  computed: {
-    ...mapGetters(["loggedIn", "str"]),
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    const redirect = () => {
+      router.push({ name: "home" });
+    };
+    const loginSuccess = computed(() => {
+      return store.state.loginSuccess;
+    });
+    return { store, router, loginSuccess, redirect };
   },
-  methods: {
-    ...mapMutations(["logout"]),
-    redirect() {
-      this.$router.push({ name: "home" });
-    },
-  },
-  components: { TodosList },
+  components: { TodosList, PopUpNotification }, // eslint-disable-line vue/no-unused-components
 });
 </script>

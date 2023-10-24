@@ -7,39 +7,40 @@
       />
       <LoginForm
         v-model:login-chosen="loginChosen"
-        v-model:login-success="loginSuccess"
         :back="back"
         v-if="loginChosen"
       />
       <RegisterForm
         v-model:register-chosen="registerChosen"
-        v-model:register-success="registerSuccess"
         :back="back"
         v-if="registerChosen"
       />
-      <PopUpNotification
-        v-model:login-success="loginSuccess"
-        v-model:register-success="registerSuccess"
-        v-if="loginSuccess || registerSuccess"
-      />
     </div>
+    <PopUpNotification
+      type="success"
+      message="Successfully registered!"
+      v-if="displayPopUp"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import AuthOptions from "@/components/home/AuthOptions.vue";
 import LoginForm from "@/components/home/LoginForm.vue";
 import RegisterForm from "@/components/home/RegisterForm.vue";
 import PopUpNotification from "@/components/common/PopUpNotification.vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "HomeView",
   setup() {
     const loginChosen = ref(false);
     const registerChosen = ref(false);
-    const loginSuccess = ref(false);
-    const registerSuccess = ref(false);
+    const store = useStore();
+    const displayPopUp = computed(() => {
+      return store.state.registerSuccess;
+    });
     const back = () => {
       loginChosen.value = false;
       registerChosen.value = false;
@@ -47,11 +48,10 @@ export default defineComponent({
     return {
       loginChosen,
       registerChosen,
-      loginSuccess,
-      registerSuccess,
+      displayPopUp,
       back,
     };
   },
-  components: { AuthOptions, LoginForm, RegisterForm, PopUpNotification },
+  components: { AuthOptions, LoginForm, RegisterForm, PopUpNotification }, // eslint-disable-line vue/no-unused-components
 });
 </script>
