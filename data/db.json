@@ -3,50 +3,42 @@
     {
       "id": 0,
       "name": "Learn TypeScript",
-      "done": true,
-      "deleted": false
+      "done": true
     },
     {
       "id": 2,
       "name": "Learn Golang",
-      "done": true,
-      "deleted": false
+      "done": true
     },
     {
       "id": 4,
       "name": "Learn Python",
-      "done": true,
-      "deleted": false
+      "done": true
     },
     {
       "id": 5,
       "name": "Learn Ruby",
-      "done": false,
-      "deleted": false
+      "done": false
     },
     {
       "id": 6,
       "name": "Learn Ruby",
-      "done": false,
-      "deleted": false
+      "done": false
     },
     {
       "id": 7,
       "name": "Learn Ruby",
-      "done": true,
-      "deleted": false
+      "done": true
     },
     {
       "id": 8,
       "name": "Learn Rust",
-      "done": false,
-      "deleted": false
+      "done": false
     },
     {
       "id": 9,
       "name": "Learn Ruby",
-      "done": true,
-      "deleted": false
+      "done": true
     },
     {
       "id": 12,
