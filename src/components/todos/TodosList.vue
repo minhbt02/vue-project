@@ -109,53 +109,54 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, getCurrentInstance } from "vue";
+import { defineComponent, ref, reactive, getCurrentInstance } from "vue";
 import AddTodoForm from "./AddTodoForm.vue";
 import EditTodoForm from "./EditTodoForm.vue";
 import { TodosListPresenter } from "@/presenters/TodosListPresenter";
 import { ComponentPublicInstance } from "vue";
 import { ITodoList } from "@/interfaces/ITodoList";
-import { onMounted } from "vue";
-import { Todo } from "@/models/Todo";
+import { TodoType } from "@/repo/services/todo.service";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "TodosList",
   setup() {
-    const todos = ref();
+    const todos = ref<TodoType[]>([]);
+    const popUpMessage = ref<string>("");
+    const popUpType = ref<string>("");
+    console.log(getCurrentInstance())
     const presenter = new TodosListPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<ITodoList>
     );
-    const todosLoaded = ref(false);
-    const todoItem = ref();
-    const filteredTodos = ref();
-    const displayedTodos = ref();
-    const length = ref();
-    const showTodoForm = ref(false);
-    const showEditForm = ref(false);
-    const showCompleted = ref(false);
-    const page = ref(1);
-    const newId = ref();
-    onMounted(() => {
-      loadDataToView();
+    const store = useStore();
+    const todosLoaded = ref<boolean>(false);
+    const todoItem = reactive<TodoType>({
+      id: -1,
+      userId: -1,
+      name: "",
+      done: false,
     });
-    const setTodos = (
-      todosList: Array<{ id: number; name: string; done: boolean }>
-    ) => {
-      todos.value = todosList;
+    const filteredTodos = ref<TodoType[]>([]);
+    const displayedTodos = ref<TodoType[]>([]);
+    const length = ref<number>();
+    const showTodoForm = ref<boolean>(false);
+    const showEditForm = ref<boolean>(false);
+    const showCompleted = ref<boolean>(false);
+    const page = ref<number>(1);
+    const newId = ref<number>(-1);
+    const setTodos = async () => {
+      todos.value = await presenter.all();
     };
+    setTodos();
     const setTodosLoaded = () => {
       todosLoaded.value = true;
     };
     const setNewId = (id: number) => {
       newId.value = id;
     };
-    const setFilteredTodos = (
-      newfilteredTodos: Array<{ id: number; name: string; done: boolean }>
-    ) => {
+    const setFilteredTodos = (newfilteredTodos: TodoType[]) => {
       filteredTodos.value = newfilteredTodos;
     };
-    const setDisplayedTodos = (
-      newDisplayedTodos: Array<{ id: number; name: string; done: boolean }>
-    ) => {
+    const setDisplayedTodos = (newDisplayedTodos: TodoType[]) => {
       displayedTodos.value = newDisplayedTodos;
     };
     const setLength = (newLength: number) => {
@@ -163,6 +164,9 @@ export default defineComponent({
     };
     const setPage = (newPage: number) => {
       page.value = newPage;
+    };
+    const getStore = () => {
+      return store;
     };
     const getTodos = () => {
       return todos.value;
@@ -182,11 +186,12 @@ export default defineComponent({
     const getPage = () => {
       return page.value;
     };
+    const showError = (error: string) => {
+      popUpMessage.value = error;
+      popUpType.value = "fail";
+    };
     const pageChange = () => {
       presenter.handleChanges();
-    };
-    const loadDataToView = () => {
-      presenter.loadDataToView();
     };
     const handleAddTodo = () => {
       presenter.handleChanges();
@@ -194,11 +199,11 @@ export default defineComponent({
     const handleEditTodo = () => {
       presenter.handleChanges();
     };
-    const handleCompletedTodo = (todo: object) => {
+    const handleCompletedTodo = (todo: TodoType) => {
       presenter.todoCompleted(todo);
     };
-    const handleDeletedTodo = (todo: object) => {
-      presenter.removeTodo(todo);
+    const handleDeletedTodo = (todo: TodoType) => {
+      presenter.removeTodo(todo.id);
     };
     const handleShowCompleted = () => {
       presenter.handleChanges();
@@ -208,6 +213,8 @@ export default defineComponent({
       todos,
       todosLoaded,
       todoItem,
+      popUpMessage,
+      popUpType,
       filteredTodos,
       displayedTodos,
       length,
@@ -216,7 +223,6 @@ export default defineComponent({
       showCompleted,
       page,
       newId,
-      loadDataToView,
       setTodos,
       setTodosLoaded,
       setNewId,
@@ -224,6 +230,8 @@ export default defineComponent({
       setDisplayedTodos,
       setLength,
       setPage,
+      showError,
+      getStore,
       getTodos,
       getShowCompleted,
       getFilteredTodos,

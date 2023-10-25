@@ -6,7 +6,7 @@ export class EditTodoFormPresenter {
   private model: Todo;
   constructor(view: IEditTodoForm, model: Todo | null = null) {
     this.view = view;
-    this.model = model ?? new Todo(-1, "", false);
+    this.model = model ?? new Todo();
   }
   public setName(name: string) {
     this.model.setName(name);

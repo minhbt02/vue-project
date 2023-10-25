@@ -1,28 +1,47 @@
-import { createData, deleteData, loadData, updateData } from "@/services";
+import { createData, deleteData, loadData, updateData } from "@/utils/hooks";
+import { DataError } from "@/utils/error";
+import { TodoType } from "@/repo/services/todo.service";
 
 export class Todo {
-  constructor(
-    private id: number,
-    private name: string,
-    private done: boolean
-  ) {}
+  private _id!: number;
+  private _userId!: number;
+  private _name!: string;
+  private _done = false;
+  public getModel(): TodoType {
+    const todo: TodoType = {
+      id: this.getId(),
+      userId: this.getUserId(),
+      name: this.getName(),
+      done: this.getDone(),
+    };
+    return todo;
+  }
   public getId(): number {
-    return this.id;
+    return this._id;
   }
   public setId(id: number): void {
-    this.id = id;
+    this._id = id;
+  }
+  public getUserId(): number {
+    return this._userId;
+  }
+  public setUserId(userId: number): void {
+    this._userId = userId;
   }
   public getName(): string {
-    return this.name;
+    return this._name;
   }
   public setName(name: string): void {
-    this.name = name;
+    if (name.length > 50) {
+      throw new DataError();
+    }
+    this._name = name;
   }
   public getDone(): boolean {
-    return this.done;
+    return this._done;
   }
   public setDone(done: boolean): void {
-    this.done = done;
+    this._done = done;
   }
   public all(): Promise<Array<{ id: number; name: string; done: boolean }>> {
     return loadData("todos");
@@ -34,9 +53,9 @@ export class Todo {
   }
   public createTodo(): void {
     const data = {
-      id: this.id,
-      name: this.name,
-      done: this.done,
+      id: this.getId(),
+      name: this.getName(),
+      done: this.getDone(),
     };
     createData("todos", JSON.stringify(data));
   }
@@ -46,11 +65,11 @@ export class Todo {
   public updateTodo(): void {
     try {
       const data = {
-        id: this.id,
-        name: this.name,
-        done: this.done,
+        id: this.getId(),
+        name: this.getName(),
+        done: this.getDone(),
       };
-      updateData("todos", this.id, JSON.stringify(data));
+      updateData("todos", this.getId(), JSON.stringify(data));
     } catch (err) {
       console.log(err);
     }
@@ -64,7 +83,7 @@ export class Todo {
   }
   public deleteTodo(): void {
     try {
-      deleteData("todos", this.id);
+      deleteData("todos", this.getId());
     } catch (err) {
       console.log(err);
     }

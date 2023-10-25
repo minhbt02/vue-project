@@ -49,7 +49,6 @@
 
 <script lang="ts">
 import { IRegisterForm } from "@/interfaces/IRegisterForm";
-import { User } from "@/models/User";
 import { RegisterFormPresenter } from "@/presenters/RegisterFormPresenter";
 import { ComponentPublicInstance } from "vue";
 import { getCurrentInstance } from "vue";

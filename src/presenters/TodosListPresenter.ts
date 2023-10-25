@@ -1,31 +1,37 @@
+import { TodoInteractor } from "@/interactors/TodoInteractor";
 import { ITodoList } from "@/interfaces/ITodoList";
-import { Todo } from "@/models/Todo";
+import { TodoType } from "@/repo/services/todo.service";
+import { BadRequestError, DataError, NotFoundError } from "@/utils/error";
 
 export class TodosListPresenter {
   private view: ITodoList;
-  private model: Todo;
-  constructor(view: ITodoList, model: Todo | null = null) {
+  private interactor: TodoInteractor;
+  constructor(view: ITodoList, interactor: TodoInteractor | null = null) {
     this.view = view;
-    this.model = model ?? new Todo(-1, "", false);
+    this.interactor = interactor ?? new TodoInteractor();
   }
-  public setModel(todo: any) {
-    this.model.setId(todo.id);
-    this.model.setName(todo.name);
-    this.model.setDone(todo.done);
-  }
-  public loadDataToView(): void {
-    Todo.all()
-      .then(
-        (returnData: Array<{ id: number; name: string; done: boolean }>) => {
-          this.view.setTodos(returnData);
-          this.view.setTodosLoaded();
-          this.view.setNewId(this.findNewId());
-          this.handleChanges();
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      });
+  public async all(): Promise<TodoType[]> {
+    try {
+      debugger
+      const uid = this.view.getStore().state.uid;
+      console.log("asd");
+      this.view.setTodosLoaded();
+      this.view.setNewId(this.findNewId());
+      this.handleChanges();
+      return await this.interactor.all(uid);
+      // return data;
+    } catch (error: any) {
+      if (error instanceof DataError) {
+        this.view.showError("Data is empty");
+      } else if (error instanceof BadRequestError) {
+        this.view.showError("Invalid response from the repository");
+      } else if (error instanceof NotFoundError) {
+        this.view.showError("Todo not found");
+      } else {
+        this.view.showError("System Error");
+      }
+      return [];
+    }
   }
   public handleChanges() {
     this.view.setFilteredTodos(this.calcFilteredTodos());
@@ -36,20 +42,12 @@ export class TodosListPresenter {
       this.handleChanges();
     }
   }
-  public calcFilteredTodos(): Array<{
-    id: number;
-    name: string;
-    done: boolean;
-  }> {
+  public calcFilteredTodos(): TodoType[] {
     return this.view.getShowCompleted()
       ? this.view.getTodos()
       : this.view.getTodos().filter((t: any) => !t.done);
   }
-  public calcDisplayedTodos(): Array<{
-    id: number;
-    name: string;
-    done: boolean;
-  }> {
+  public calcDisplayedTodos(): TodoType[] {
     const todosCopy = this.view.getFilteredTodos().slice();
     const pageIndex = this.view.getPage() > 0 ? this.view.getPage() : 1;
     const start = (pageIndex - 1) * 4;
@@ -68,23 +66,15 @@ export class TodosListPresenter {
     }
     return max + 1;
   }
-  public todoCompleted(todo: object): void {
-    this.setModel(todo);
-    if (this.model) {
-      this.model.updateTodo();
-      this.handleChanges();
-    } else {
-      console.log("Fail to execute: TodoListPresenter.todoCompleted()");
-    }
+  public todoCompleted(todo: TodoType): void {
+    this.interactor.updateTodo(todo);
+    this.handleChanges();
   }
-  public removeTodo(todo: object): void {
-    this.setModel(todo);
-    if (this.model) {
-      this.view.setTodos(this.view.getTodos().filter((t: any) => t !== todo));
-      this.model.deleteTodo();
-      this.handleChanges();
-    } else {
-      console.log("Fail to execute: TodoListPresenter.removeTodo()");
-    }
+  public removeTodo(id: number): void {
+    this.view.setTodos(
+      this.view.getTodos().filter((t: TodoType) => t.id !== id)
+    );
+    this.interactor.deleteTodo(id);
+    this.handleChanges();
   }
 }

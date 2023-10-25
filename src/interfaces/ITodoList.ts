@@ -1,23 +1,21 @@
+import { TodoType } from "@/repo/services/todo.service";
+import { Store } from "vuex";
+
 export interface ITodoList {
-  getTodos(): Array<{ id: number, name: string, done: boolean }>;
+  getStore(): Store<any>,
+  getTodos(): TodoType[];
   getShowCompleted(): boolean;
-  getFilteredTodos(): Array<{ id: number, name: string, done: boolean }>;
-  getDisplayedTodos(): Array<{ id: number, name: string, done: boolean }>;
+  getFilteredTodos(): TodoType[];
+  getDisplayedTodos(): TodoType[];
   getLength(): number;
   getPage(): number;
-  setTodos(todos: Array<{ id: number, name: string, done: boolean }>): () => void;
+  setTodos(todos: TodoType[]): () => void;
   setTodosLoaded(): () => void;
   setNewId(id: number): () => void;
-  setFilteredTodos(filteredTodos: Array<{ id: number, name: string, done: boolean }>): () => void;
-  setDisplayedTodos(displayedTodos: Array<{ id: number, name: string, done: boolean }>): () => void;
+  setFilteredTodos(filteredTodos: TodoType[]): () => void;
+  setDisplayedTodos(displayedTodos: TodoType[]): () => void;
   setLength(length: number): () => void;
   setPage(page: number): () => void;
+  showError(error: string): () => void;
   getTodos(): () => void;
-  pageChange(): () => void;
-  loadDataToView(): () => void;
-  handleAddTodo(): () => void;
-  handleEditTodo(): () => void;
-  handleCompletedTodo(todo: object): () => void;
-  handleDeletedTodo(todo: object): () => void;
-  handleShowCompleted(): () => void;
 }

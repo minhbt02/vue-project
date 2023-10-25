@@ -4,7 +4,7 @@ import VuexPersist from "vuex-persist";
 export default createStore({
   state: {
     loggedIn: false,
-    id: -1,
+    uid: -1,
     loginSuccess: false,
     registerSuccess: false,
     displayPopUp: false,
@@ -13,8 +13,8 @@ export default createStore({
     loggedIn(state) {
       return state.loggedIn;
     },
-    id(state) {
-      return state.id;
+    uid(state) {
+      return state.uid;
     },
     loginSuccess(state) {
       return state.loginSuccess;
@@ -35,7 +35,7 @@ export default createStore({
         state.loginSuccess = false;
         state.displayPopUp = false;
       }, 3000);
-      state.id = uid;
+      state.uid = uid;
     },
     logout(state) {
       state.loggedIn = false;

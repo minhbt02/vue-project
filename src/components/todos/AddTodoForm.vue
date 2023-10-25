@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { Todo } from "@/models/Todo";
 import { AddTodoFormPresenter } from "@/presenters/AddTodoFormPresenter";
 import { getCurrentInstance } from "vue";
 import { ComponentPublicInstance } from "vue";

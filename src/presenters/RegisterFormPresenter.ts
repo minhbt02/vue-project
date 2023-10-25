@@ -6,7 +6,7 @@ export class RegisterFormPresenter {
   private model: User;
   constructor(view: IRegisterForm, model: User | null = null) {
     this.view = view;
-    this.model = model ?? new User(-1, "", "");
+    this.model = model ?? new User();
   }
   public setModel(id: number, username: string, password: string) {
     this.model.setId(id);

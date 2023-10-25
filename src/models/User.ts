@@ -1,28 +1,42 @@
-import { createData, deleteData, loadData, updateData } from "@/services";
+import { createData, deleteData, loadData, updateData } from "@/utils/hooks";
+import { DataError } from "@/utils/error";
+import { UserType } from "@/repo/services/user.service";
 
 export class User {
-  constructor(
-    private id: number,
-    private username: string,
-    private password: string
-  ) {}
+  private _id!: number;
+  private _username!: string;
+  private _password!: string;
+  public getModel(): UserType {
+    const user: UserType = {
+      id: this.getId(),
+      username: this.getUsername(),
+      password: this.getPassword(),
+    };
+    return user;
+  }
   public getId(): number {
-    return this.id;
+    return this._id;
   }
   public setId(id: number): void {
-    this.id = id;
+    this._id = id;
   }
   public getUsername(): string {
-    return this.username;
+    return this._username;
   }
   public setUsername(username: string): void {
-    this.username = username;
+    if (username.length < 6 && username.length > 20) {
+      throw new DataError();
+    }
+    this._username = username;
   }
   public getPassword(): string {
-    return this.password;
+    return this._password;
   }
   public setPassword(password: string): void {
-    this.password = password;
+    if (password.length < 6 && password.length > 32) {
+      throw new DataError();
+    }
+    this._password = password;
   }
   public all(): Promise<
     Array<{ id: number; username: string; password: string }>
@@ -36,21 +50,21 @@ export class User {
   }
   public createUser() {
     const data = {
-      id: this.id,
-      username: this.username,
-      password: this.password,
+      id: this.getId(),
+      username: this.getUsername(),
+      password: this.getPassword(),
     };
     createData("user", JSON.stringify(data));
   }
   public updateUser(): void {
     const data = {
-      id: this.id,
-      username: this.username,
-      password: this.password,
+      id: this.getId(),
+      username: this.getUsername(),
+      password: this.getPassword(),
     };
-    updateData("user", this.id, JSON.stringify(data));
+    updateData("user", this.getId(), JSON.stringify(data));
   }
   public deleteUser(): void {
-    deleteData("user", this.id);
+    deleteData("user", this.getId());
   }
 }
