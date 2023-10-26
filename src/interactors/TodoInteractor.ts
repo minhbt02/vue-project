@@ -12,18 +12,18 @@ export class TodoInteractor {
   }
   public async all(uid: number): Promise<TodoType[]> {
     try { // eslint-disable-line
-      return this.todoService.all(uid);
+      return await this.todoService.all(uid);
     } catch (error) {
       throw error;
     }
   }
-  public async createTodo(todo: TodoType): Promise<void> {
+  public async createTodo(todo: TodoType): Promise<TodoType> {
     try { // eslint-disable-line
       const newTodo = new Todo();
       newTodo.setId(todo.id);
       newTodo.setUserId(todo.userId);
       newTodo.setName(todo.name);
-      this.todoService.createTodo(newTodo.getModel());
+      return await this.todoService.createTodo(newTodo.getModel());
     } catch (error) {
       throw error;
     }

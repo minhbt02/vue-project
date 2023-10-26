@@ -1,5 +1,9 @@
 import { User } from "@/models/User";
-import { IUserService, UserType, UserService } from "@/repo/services/user.service";
+import {
+  IUserService,
+  UserType,
+  UserService,
+} from "@/repo/services/user.service";
 
 export class UserInteractor {
   private userService: UserService;
@@ -7,14 +11,14 @@ export class UserInteractor {
     this.userService = userService ?? new UserService();
   }
   public async all(): Promise<UserType[]> {
-    try {
+    try { // eslint-disable-line
       return this.userService.all();
     } catch (error) {
       throw error;
     }
   }
   public async createUser(user: UserType): Promise<void> {
-    try {
+    try { // eslint-disable-line
       const newUser = new User();
       newUser.setId(user.id);
       newUser.setUsername(user.username);
@@ -25,7 +29,7 @@ export class UserInteractor {
     }
   }
   public async updateUser(user: UserType): Promise<void> {
-    try {
+    try { // eslint-disable-line
       const newUser = new User();
       newUser.setId(user.id);
       newUser.setUsername(user.username);
@@ -36,7 +40,7 @@ export class UserInteractor {
     }
   }
   public async deleteUser(user: UserType): Promise<void> {
-    try {
+    try { // eslint-disable-line
       const newUser = new User();
       newUser.setId(user.id);
       this.userService.deleteUser(newUser.getModel());
