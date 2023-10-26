@@ -24,20 +24,14 @@
         Login
       </v-btn>
     </div>
-    <PopUpNotification
-      type="success"
-      message="Successfully logged in!"
-      v-if="loginSuccess"
-    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useStore } from "vuex";
-import { TodosList, PopUpNotification } from "@/components";
+import { TodosList } from "@/components";
 import { useRouter } from "vue-router";
-import { computed } from "vue";
 export default defineComponent({
   name: "TodosView",
   setup() {
@@ -46,11 +40,8 @@ export default defineComponent({
     const redirect = () => {
       router.push({ name: "home" });
     };
-    const loginSuccess = computed(() => {
-      return store.state.loginSuccess;
-    });
-    return { store, router, loginSuccess, redirect };
+    return { store, router, redirect };
   },
-  components: { TodosList, PopUpNotification }, // eslint-disable-line vue/no-unused-components
+  components: { TodosList },
 });
 </script>
