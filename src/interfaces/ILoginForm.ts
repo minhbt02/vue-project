@@ -5,8 +5,13 @@ export interface ILoginForm {
   id: number,
   username: string,
   password: string,
-  getStore(): Store<any>,
-  getRouter(): Router,
+  setId(id: number): () => void;
+  getId(): () => number;
+  getUsername(): string;
+  getPassword(): string;
+  getStore(): Store<any>;
+  getRouter(): Router;
+  showError(error: string): () => void;
   $emit(event: string, ...args: any[]): () => void;
   submitLogin(): () => void;
 }

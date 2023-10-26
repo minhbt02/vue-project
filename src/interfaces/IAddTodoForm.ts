@@ -1,7 +1,12 @@
+import { TodoType } from "@/repo/services/todo.service";
+
 export interface IAddTodoForm {
-  getTodos(): Array<{ id: number, name: string, done: boolean }>;
+  setName(name: string): () => void;
+  setTodo(todo: TodoType): () => void;
+  getTodos(): TodoType[];
+  getTodo(): TodoType;
   getNewId(): number;
   getName(): string;
-  setTodos(todos: Array<{ id: number, name: string, done: boolean }>): () => void;
+  showError(error: string): () => void;
   $emit(event: string, ...args: any[]): () => void;
 }

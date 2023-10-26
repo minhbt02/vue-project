@@ -10,6 +10,7 @@ export interface ITodoList {
   getLength(): number;
   getPage(): number;
   setTodos(todos: TodoType[]): () => void;
+  setTodoItem(todo: TodoType): () => void;
   setTodosLoaded(): () => void;
   setNewId(id: number): () => void;
   setFilteredTodos(filteredTodos: TodoType[]): () => void;
@@ -17,5 +18,4 @@ export interface ITodoList {
   setLength(length: number): () => void;
   setPage(page: number): () => void;
   showError(error: string): () => void;
-  getTodos(): () => void;
 }

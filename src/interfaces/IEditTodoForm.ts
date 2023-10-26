@@ -1,6 +1,9 @@
+import { TodoType } from "@/repo/services/todo.service";
+
 export interface IEditTodoForm {
-  getTodos(): Array<{ id: number, name: string, done: boolean }>;
+  getTodos(): TodoType[];
   getIndex(): number;
-  setName(): () => void;
+  getTodo(): TodoType;
+  showError(error: string): () => void;
   $emit(event: string, ...args: any[]): () => void;
 }
