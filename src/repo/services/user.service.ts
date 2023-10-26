@@ -37,7 +37,11 @@ export class UserService implements IUserService {
   }
   public async createUser(user: UserType): Promise<void> {
     try {
-      const res = await request.post("/user", user);
+      const newUser = {
+        username: user.username,
+        password: user.password,
+      };
+      const res = await request.post("/user", newUser);
       if (!res.data) {
         throw new NotFoundError();
       }
@@ -55,7 +59,7 @@ export class UserService implements IUserService {
   }
   public async updateUser(user: UserType): Promise<void> {
     try {
-      const res = await request.put(`/user/${user.id}`);
+      const res = await request.put(`/user/${user.id}`, user);
       if (!res.data) {
         throw new NotFoundError();
       }
@@ -77,7 +81,7 @@ export class UserService implements IUserService {
       if (!res.data) {
         throw new NotFoundError();
       }
-    } catch (error:any) {
+    } catch (error: any) {
       const status = error.response.status;
       switch (status) {
         case 400:
@@ -89,5 +93,4 @@ export class UserService implements IUserService {
       }
     }
   }
-  
 }

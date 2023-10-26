@@ -10,7 +10,7 @@ export type TodoType = {
 
 export interface ITodoService {
   all(uid: number): Promise<TodoType[]>;
-  createTodo(todo: TodoType): Promise<void>;
+  createTodo(todo: TodoType): Promise<TodoType>;
   updateTodo(todo: TodoType): Promise<void>;
   deleteTodo(id: number): Promise<void>;
 }
@@ -36,12 +36,19 @@ export class TodoService implements ITodoService {
       }
     }
   }
-  public async createTodo(todo: TodoType): Promise<void> {
+  public async createTodo(todo: TodoType): Promise<TodoType> {
     try {
-      const res = await request.post("/todos", todo);
+      const newTodo = {
+        userId: todo.userId,
+        name: todo.name,
+        done: todo.done,
+      };
+      const res = await request.post("/todos", newTodo);
       if (!res.data) {
         throw new NotFoundError();
       }
+      const data: TodoType = res.data;
+      return data;
     } catch (error: any) {
       const status = error.response.status;
       switch (status) {
@@ -56,7 +63,7 @@ export class TodoService implements ITodoService {
   }
   public async updateTodo(todo: TodoType): Promise<void> {
     try {
-      const res = await request.put(`/todos/${todo.id}`);
+      const res = await request.put(`/todos/${todo.id}`, todo);
       if (!res.data) {
         throw new NotFoundError();
       }

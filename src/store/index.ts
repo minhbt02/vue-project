@@ -29,22 +29,29 @@ export default createStore({
   mutations: {
     login(state, uid) {
       state.loggedIn = true;
+      state.uid = uid;
       state.loginSuccess = true;
       state.displayPopUp = true;
       setTimeout(() => {
         state.loginSuccess = false;
         state.displayPopUp = false;
       }, 3000);
-      state.uid = uid;
     },
     logout(state) {
       state.loggedIn = false;
+      state.uid = -1;
     },
     register(state) {
       state.registerSuccess = true;
       state.displayPopUp = true;
       setTimeout(() => {
         state.registerSuccess = false;
+        state.displayPopUp = false;
+      }, 3000);
+    },
+    showError(state) {
+      state.displayPopUp = true;
+      setTimeout(() => {
         state.displayPopUp = false;
       }, 3000);
     },

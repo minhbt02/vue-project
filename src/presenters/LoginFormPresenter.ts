@@ -1,28 +1,43 @@
-import { User } from "@/models/User";
 import { ILoginForm } from "@/interfaces/ILoginForm";
+import { UserInteractor } from "@/interactors/UserInteractor";
+import { DataError, BadRequestError, NotFoundError } from "@/utils/error";
 
 export class LoginFormPresenter {
-  constructor(private view: ILoginForm, private model?: User) {}
-  public authenticate() {
-    User.all()
+  private view: ILoginForm;
+  private interactor: UserInteractor;
+  constructor(view: ILoginForm, interactor: UserInteractor | null = null) {
+    this.view = view;
+    this.interactor = interactor ?? new UserInteractor();
+  }
+  public async authenticate(): Promise<void> {
+    await this.interactor
+      .all()
       .then((returnData) => {
-        if (
-          returnData.find((element) => {
-            return (
-              this.view.username === element.username &&
-              this.view.password === element.password
-            );
-          })
-        ) {
+        const user = returnData.find((element) => {
+          return (
+            this.view.getUsername() === element.username &&
+            this.view.getPassword() === element.password
+          );
+        });
+        if (user) {
+          this.view.setId(user.id);
           this.view.$emit("update:login-chosen", false);
-          this.view.getStore().commit("login", this.view.id);
+          this.view.getStore().commit("login", this.view.getId());
           this.view.getRouter().push({ name: "todos" });
         } else {
           this.view.$emit("update:login-chosen", false);
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error: any) => {
+        if (error instanceof DataError) {
+          this.view.showError("Data is empty");
+        } else if (error instanceof BadRequestError) {
+          this.view.showError("Invalid response from the repository");
+        } else if (error instanceof NotFoundError) {
+          this.view.showError("Todo not found");
+        } else {
+          this.view.showError("System Error");
+        }
       });
   }
 }

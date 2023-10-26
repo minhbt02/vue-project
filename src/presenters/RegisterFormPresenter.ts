@@ -1,21 +1,24 @@
+import { UserInteractor } from "@/interactors/UserInteractor";
 import { IRegisterForm } from "@/interfaces/IRegisterForm";
-import { User } from "@/models/User";
+import { DataError, BadRequestError, NotFoundError } from "@/utils/error";
 
 export class RegisterFormPresenter {
   private view: IRegisterForm;
-  private model: User;
-  constructor(view: IRegisterForm, model: User | null = null) {
+  private interactor: UserInteractor;
+  constructor(view: IRegisterForm, interactor: UserInteractor | null = null) {
     this.view = view;
-    this.model = model ?? new User();
+    this.interactor = interactor ?? new UserInteractor();
   }
   public setModel(id: number, username: string, password: string) {
-    this.model.setId(id);
-    this.model.setUsername(username);
-    this.model.setPassword(password);
+    this.view.setUser({
+      id: id,
+      username: username,
+      password: password,
+    });
   }
-  public newUser() {
+  public async newUser(): Promise<void> {
     try {
-      User.all().then((returnData) => {
+      await this.interactor.all().then((returnData) => {
         if (
           returnData.find((element) => {
             return this.view.getUsername() === element.username;
@@ -25,11 +28,26 @@ export class RegisterFormPresenter {
         } else {
           if (this.view.getPassword() === this.view.getPasswordConfirm()) {
             this.setModel(
-              this.findNewId(returnData),
+              this.view.getId(),
               this.view.getUsername(),
               this.view.getPassword()
             );
-            this.model.createUser();
+            const createNewUser = async () => {
+              await this.interactor
+                .createUser(this.view.getUser())
+                .catch((error: any) => {
+                  if (error instanceof DataError) {
+                    this.view.showError("Data is empty");
+                  } else if (error instanceof BadRequestError) {
+                    this.view.showError("Invalid response from the repository");
+                  } else if (error instanceof NotFoundError) {
+                    this.view.showError("Todo not found");
+                  } else {
+                    this.view.showError("System Error");
+                  }
+                });
+            };
+            createNewUser();
             this.view.getStore().commit("register");
             this.view.$emit("update:register-chosen", false);
           } else {
@@ -37,19 +55,16 @@ export class RegisterFormPresenter {
           }
         }
       });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  public findNewId(
-    users: Array<{ id: number; username: string; password: string }>
-  ): number {
-    let max = Number(users[0].id);
-    for (let i = 0; i < users.length - 1; i++) {
-      if (users[i].id < users[i + 1].id) {
-        max = Number(users[i + 1].id);
+    } catch (error: any) {
+      if (error instanceof DataError) {
+        this.view.showError("Data is empty");
+      } else if (error instanceof BadRequestError) {
+        this.view.showError("Invalid response from the repository");
+      } else if (error instanceof NotFoundError) {
+        this.view.showError("Todo not found");
+      } else {
+        this.view.showError("System Error");
       }
     }
-    return max + 1;
   }
 }

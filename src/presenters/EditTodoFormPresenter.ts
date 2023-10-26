@@ -1,24 +1,30 @@
+import { TodoInteractor } from "@/interactors/TodoInteractor";
 import { IEditTodoForm } from "@/interfaces/IEditTodoForm";
-import { Todo } from "@/models/Todo";
+import { DataError, BadRequestError, NotFoundError } from "@/utils/error";
 
 export class EditTodoFormPresenter {
   private view: IEditTodoForm;
-  private model: Todo;
-  constructor(view: IEditTodoForm, model: Todo | null = null) {
+  private interactor: TodoInteractor;
+  constructor(view: IEditTodoForm, interactor: TodoInteractor | null = null) {
     this.view = view;
-    this.model = model ?? new Todo();
+    this.interactor = interactor ?? new TodoInteractor();
   }
-  public setName(name: string) {
-    this.model.setName(name);
-  }
-  public updateTodo() {
+  public async updateTodo(): Promise<void> {
     const todosCopy = this.view.getTodos().slice();
-    todosCopy[this.view.getIndex()] = {
-      id: this.model.getId(),
-      name: this.model.getName(),
-      done: this.model.getDone(),
-    };
-    this.model.updateTodo();
-    this.view.$emit("update:todos", todosCopy);
+    try {
+      todosCopy[this.view.getIndex()] = this.view.getTodo();
+      await this.interactor.updateTodo(this.view.getTodo());
+      this.view.$emit("update:todos", todosCopy);
+    } catch (error: any) {
+      if (error instanceof DataError) {
+        this.view.showError("Data is empty");
+      } else if (error instanceof BadRequestError) {
+        this.view.showError("Invalid response from the repository");
+      } else if (error instanceof NotFoundError) {
+        this.view.showError("Todo not found");
+      } else {
+        this.view.showError("System Error");
+      }
+    }
   }
 }
