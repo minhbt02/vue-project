@@ -1,72 +1,4 @@
 {
-  "todos": [
-    {
-      "id": 0,
-      "userId": 0,
-      "name": "Learn TypeScript",
-      "done": true
-    },
-    {
-      "id": 2,
-      "userId": 0,
-      "name": "Learn Golang",
-      "done": true
-    },
-    {
-      "id": 4,
-      "userId": 0,
-      "name": "Learn Python",
-      "done": true
-    },
-    {
-      "id": 5,
-      "userId": 0,
-      "name": "Learn Ruby",
-      "done": false
-    },
-    {
-      "id": 6,
-      "userId": 1,
-      "name": "Learn Ruby",
-      "done": false
-    },
-    {
-      "id": 7,
-      "userId": 2,
-      "name": "Learn Ruby",
-      "done": true
-    },
-    {
-      "id": 8,
-      "userId": 0,
-      "name": "Learn Rust",
-      "done": false
-    },
-    {
-      "id": 9,
-      "userId": 3,
-      "name": "Learn Ruby",
-      "done": true
-    },
-    {
-      "id": 12,
-      "userId": 0,
-      "name": "Learn C",
-      "done": false
-    },
-    {
-      "id": 13,
-      "userId": 0,
-      "name": "Learn C#",
-      "done": false
-    },
-    {
-      "id": 14,
-      "userId": 1,
-      "name": "Learn C#",
-      "done": true
-    }
-  ],
   "user": [
     {
       "id": 0,
@@ -92,6 +24,11 @@
       "id": 4,
       "username": "mikeloe",
       "password": "123456"
+    },
+    {
+      "username": "broski",
+      "password": "123456",
+      "id": 5
     }
   ]
 }
