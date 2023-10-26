@@ -59,11 +59,23 @@ export default defineComponent({
     const presenter = new LoginFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<ILoginForm>
     );
-    const id = ref();
-    const username = ref("");
-    const password = ref("");
+    const id = ref<number>(-1);
+    const username = ref<string>("");
+    const password = ref<string>("");
     const store = useStore();
     const router = useRouter();
+    const setId = (uid: number) => {
+      id.value = uid;
+    };
+    const getId = () => {
+      return id.value;
+    };
+    const getUsername = () => {
+      return username.value;
+    };
+    const getPassword = () => {
+      return password.value;
+    };
     const getStore = () => {
       return store;
     };
@@ -73,6 +85,9 @@ export default defineComponent({
     const submitLogin = () => {
       presenter.authenticate();
     };
+    const showError = (error: string) => {
+      console.log(error);
+    };
     return {
       presenter,
       store,
@@ -80,9 +95,14 @@ export default defineComponent({
       id,
       username,
       password,
+      setId,
+      getId,
+      getUsername,
+      getPassword,
       getStore,
       getRouter,
       submitLogin,
+      showError,
     };
   },
 });

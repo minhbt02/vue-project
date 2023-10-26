@@ -12,7 +12,7 @@
             label="Name"
             hint="Enter todo name"
             id="name"
-            @update:model-value="nameChange()"
+            @update:model-value="setName(name)"
           />
         </v-card>
         <div class="d-flex justify-center align-center mt-5">
@@ -25,19 +25,20 @@
 
 <script lang="ts">
 import { IEditTodoForm } from "@/interfaces/IEditTodoForm";
-import { Todo } from "@/models/Todo";
+import { TodoType } from "@/repo/services/todo.service";
 import { EditTodoFormPresenter } from "@/presenters/EditTodoFormPresenter";
 import { getCurrentInstance } from "vue";
 import { defineComponent, ref, ComponentPublicInstance } from "vue";
+import { PropType } from "vue";
 export default defineComponent({
   name: "EditTodoForm",
   props: {
     todo: {
-      type: Object,
+      type: Object as PropType<TodoType>,
       required: true,
     },
     todos: {
-      type: Array<{ id: number; name: string; done: boolean }>,
+      type: Array<TodoType>,
       required: true,
     },
     index: {
@@ -45,25 +46,46 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ["update:todos"],
+  emits: ["update:todos", "update:todo"],
   setup(props) {
     const presenter = new EditTodoFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IEditTodoForm>
     );
     const name = ref(props.todo.name);
+    const newTodo = ref<TodoType>({
+      id: props.todo.id,
+      userId: props.todo.userId,
+      name: props.todo.name,
+      done: props.todo.done,
+    });
     const getTodos = () => {
       return props.todos;
     };
     const getIndex = () => {
       return props.index;
     };
-    const nameChange = () => {
-      presenter.setName(name.value);
+    const getTodo = () => {
+      return newTodo.value;
+    };
+    const setName = (newName: string) => {
+      newTodo.value.name = newName;
     };
     const saveTodo = () => {
       presenter.updateTodo();
     };
-    return { name, presenter, getTodos, getIndex, nameChange, saveTodo };
+    const showError = (error: string) => {
+      console.log(error);
+    };
+    return {
+      name,
+      presenter,
+      getTodos,
+      getIndex,
+      getTodo,
+      setName,
+      saveTodo,
+      showError,
+    };
   },
 });
 </script>

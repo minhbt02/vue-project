@@ -4,7 +4,7 @@
       class="bg-grey-lighten-1 pa-10 rounded-xl elevation-24"
       width="400"
     >
-      <h3>Todo #{{ newId }}</h3>
+      <h3>New Todo</h3>
       <form action="" @submit.prevent="submitAddTodo">
         <v-card>
           <v-text-field
@@ -29,33 +29,40 @@ import { AddTodoFormPresenter } from "@/presenters/AddTodoFormPresenter";
 import { getCurrentInstance } from "vue";
 import { ComponentPublicInstance } from "vue";
 import { IAddTodoForm } from "@/interfaces/IAddTodoForm";
-import { onMounted } from "vue";
+import { TodoType } from "@/repo/services/todo.service";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "AddTodoForm",
   props: {
-    newId: {
-      type: Number,
-      required: true,
-    },
     todos: {
-      type: Array<{ id: number; name: string; done: boolean }>,
+      type: Array<TodoType>,
       required: true,
     },
   },
   emits: ["update:todos"],
   setup(props) {
     const name = ref("");
+    const store = useStore();
+    const todo = ref<TodoType>({
+      id: -1,
+      userId: store.state.uid,
+      name: "",
+      done: false,
+    });
     const presenter = new AddTodoFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IAddTodoForm>
     );
-    onMounted(() => {
-      presenter.setModel(props.newId, name.value);
-    });
+    const setName = (name: string) => {
+      todo.value.name = name;
+    };
+    const setTodo = (newTodo: TodoType) => {
+      todo.value = newTodo;
+    };
     const getTodos = () => {
       return props.todos;
     };
-    const getNewId = () => {
-      return props.newId;
+    const getTodo = () => {
+      return todo.value;
     };
     const getName = () => {
       return name.value;
@@ -68,9 +75,12 @@ export default defineComponent({
     };
     return {
       name,
+      todo,
       presenter,
+      setName,
+      setTodo,
       getTodos,
-      getNewId,
+      getTodo,
       getName,
       nameChange,
       submitAddTodo,

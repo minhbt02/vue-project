@@ -1,60 +1,64 @@
 <template>
   <v-sheet class="bg-grey-lighten-2 rounded-xl" width="500" height="550">
     <div v-if="todosLoaded">
-      <v-sheet class="bg-grey-lighten-2 rounded-xl" height="400">
-        <v-list lines="one" class="bg-grey-lighten-2 rounded-xl">
-          <v-list-item
-            v-for="todo in displayedTodos"
-            :key="todo.id"
-            class="px-5"
-          >
-            <v-card class="d-flex align-center px-3 my-2 py-3">
-              <v-checkbox
-                density="compact"
-                hide-details="auto"
-                v-if="todo.done"
-                v-model="todo.done"
-                color="teal-darken-3"
-                @update:model-value="handleCompletedTodo(todo)"
-              >
-                <template v-slot:label>
-                  <span
-                    class="text-h6 text-decoration-line-through text-teal-darken-2"
-                  >
-                    {{ todo.name }}
-                  </span>
-                </template>
-              </v-checkbox>
-              <v-checkbox
-                density="compact"
-                hide-details="auto"
-                v-else
-                v-model="todo.done"
-                color="black"
-                @update:model-value="handleCompletedTodo(todo)"
-              >
-                <template v-slot:label>
-                  <span class="text-h6">{{ todo.name }}</span>
-                </template>
-              </v-checkbox>
-              <v-btn
-                @click="
-                  {
-                    showEditForm = true;
-                    todoItem = todo;
-                  }
-                "
-                class="ml-3 text-h7 bg-grey-lighten-5"
-                icon="mdi-pencil"
-              ></v-btn>
-              <v-btn
-                @click="handleDeletedTodo(todo)"
-                class="ml-3 text-h7 bg-grey-lighten-5"
-                icon="mdi-trash-can"
-              ></v-btn>
-            </v-card>
-          </v-list-item>
-        </v-list>
+      <div v-if="todos.length > 0">
+        <v-sheet class="bg-grey-lighten-2 rounded-xl" height="400">
+          <v-list lines="one" class="bg-grey-lighten-2 rounded-xl" height="400">
+            <v-list-item
+              v-for="todo in displayedTodos"
+              :key="todo.id"
+              class="px-5"
+            >
+              <v-card class="d-flex align-center px-3 my-2 py-3">
+                <v-checkbox
+                  density="compact"
+                  hide-details="auto"
+                  v-if="todo.done"
+                  v-model="todo.done"
+                  color="teal-darken-3"
+                  @update:model-value="handleCompletedTodo(todo)"
+                >
+                  <template v-slot:label>
+                    <span
+                      class="text-h6 text-decoration-line-through text-teal-darken-2"
+                    >
+                      {{ todo.name }}
+                    </span>
+                  </template>
+                </v-checkbox>
+                <v-checkbox
+                  density="compact"
+                  hide-details="auto"
+                  v-else
+                  v-model="todo.done"
+                  color="black"
+                  @update:model-value="handleCompletedTodo(todo)"
+                >
+                  <template v-slot:label>
+                    <span class="text-h6">{{ todo.name }}</span>
+                  </template>
+                </v-checkbox>
+                <v-btn
+                  @click="editButtonClick(todo)"
+                  class="ml-3 text-h7 bg-grey-lighten-5"
+                  icon="mdi-pencil"
+                ></v-btn>
+                <v-btn
+                  @click="handleDeletedTodo(todo)"
+                  class="ml-3 text-h7 bg-grey-lighten-5"
+                  icon="mdi-trash-can"
+                ></v-btn>
+              </v-card>
+            </v-list-item>
+          </v-list>
+        </v-sheet>
+      </div>
+      <v-sheet
+        class="bg-grey-lighten-2 rounded-xl d-flex justify-center align-center"
+        height="400"
+        v-else
+      >
+        <h2 class="text-center">No Todo Found</h2>
       </v-sheet>
       <v-sheet class="bg-grey-lighten-2 rounded-xl" height="60">
         <v-pagination
@@ -66,8 +70,12 @@
         ></v-pagination>
       </v-sheet>
     </div>
-    <v-sheet class="bg-grey-lighten-2 rounded-xl" height="400" v-else>
-      <h3 class="text-center">Failed To Load Todos</h3>
+    <v-sheet
+      class="bg-grey-lighten-2 rounded-xl d-flex justify-center align-center"
+      height="400"
+      v-else
+    >
+      <h2 class="text-center">Failed To Load Todos</h2>
     </v-sheet>
     <div class="d-flex justify-center align-center">
       <v-btn
@@ -91,7 +99,7 @@
       class="align-center justify-center"
       @update:model-value="handleAddTodo"
     >
-      <AddTodoForm :new-id="newId" v-model:todos="todos" />
+      <AddTodoForm v-model:todos="todos" />
     </v-overlay>
     <v-overlay
       v-model="showEditForm"
@@ -105,31 +113,37 @@
         :index="todos.indexOf(todoItem)"
       />
     </v-overlay>
+    <PopUpNotification
+      :type="popUpType"
+      :message="popUpMessage"
+      v-if="loginSuccess"
+    />
   </v-sheet>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, getCurrentInstance } from "vue";
+import { defineComponent, ref, getCurrentInstance, computed } from "vue";
 import AddTodoForm from "./AddTodoForm.vue";
 import EditTodoForm from "./EditTodoForm.vue";
+import PopUpNotification from "../common/PopUpNotification.vue";
 import { TodosListPresenter } from "@/presenters/TodosListPresenter";
 import { ComponentPublicInstance } from "vue";
 import { ITodoList } from "@/interfaces/ITodoList";
 import { TodoType } from "@/repo/services/todo.service";
 import { useStore } from "vuex";
+import { onMounted } from "vue";
 export default defineComponent({
   name: "TodosList",
   setup() {
     const todos = ref<TodoType[]>([]);
-    const popUpMessage = ref<string>("");
-    const popUpType = ref<string>("");
-    console.log(getCurrentInstance())
+    const popUpMessage = ref<string>("Successfully logged in!");
+    const popUpType = ref<string>("success");
     const presenter = new TodosListPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<ITodoList>
     );
     const store = useStore();
     const todosLoaded = ref<boolean>(false);
-    const todoItem = reactive<TodoType>({
+    const todoItem = ref<TodoType>({
       id: -1,
       userId: -1,
       name: "",
@@ -142,16 +156,17 @@ export default defineComponent({
     const showEditForm = ref<boolean>(false);
     const showCompleted = ref<boolean>(false);
     const page = ref<number>(1);
-    const newId = ref<number>(-1);
-    const setTodos = async () => {
-      todos.value = await presenter.all();
+    const loginSuccess = computed(() => {
+      return store.state.loginSuccess;
+    });
+    const setTodos = (todosList: TodoType[]) => {
+      todos.value = todosList;
     };
-    setTodos();
+    const setTodoItem = (todo: TodoType) => {
+      todoItem.value = todo;
+    };
     const setTodosLoaded = () => {
       todosLoaded.value = true;
-    };
-    const setNewId = (id: number) => {
-      newId.value = id;
     };
     const setFilteredTodos = (newfilteredTodos: TodoType[]) => {
       filteredTodos.value = newfilteredTodos;
@@ -189,9 +204,14 @@ export default defineComponent({
     const showError = (error: string) => {
       popUpMessage.value = error;
       popUpType.value = "fail";
+      store.commit("showError");
     };
     const pageChange = () => {
       presenter.handleChanges();
+    };
+    const editButtonClick = (todo: TodoType) => {
+      showEditForm.value = true;
+      presenter.setTodo(todo);
     };
     const handleAddTodo = () => {
       presenter.handleChanges();
@@ -208,6 +228,9 @@ export default defineComponent({
     const handleShowCompleted = () => {
       presenter.handleChanges();
     };
+    onMounted(() => {
+      presenter.all();
+    });
     return {
       presenter,
       todos,
@@ -222,10 +245,10 @@ export default defineComponent({
       showEditForm,
       showCompleted,
       page,
-      newId,
+      loginSuccess,
       setTodos,
+      setTodoItem,
       setTodosLoaded,
-      setNewId,
       setFilteredTodos,
       setDisplayedTodos,
       setLength,
@@ -239,6 +262,7 @@ export default defineComponent({
       getLength,
       getPage,
       pageChange,
+      editButtonClick,
       handleAddTodo,
       handleEditTodo,
       handleCompletedTodo,
@@ -246,6 +270,6 @@ export default defineComponent({
       handleShowCompleted,
     };
   },
-  components: { AddTodoForm, EditTodoForm },
+  components: { AddTodoForm, EditTodoForm, PopUpNotification },
 });
 </script>

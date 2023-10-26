@@ -50,6 +50,7 @@
 <script lang="ts">
 import { IRegisterForm } from "@/interfaces/IRegisterForm";
 import { RegisterFormPresenter } from "@/presenters/RegisterFormPresenter";
+import { UserType } from "@/repo/services/user.service";
 import { ComponentPublicInstance } from "vue";
 import { getCurrentInstance } from "vue";
 import { defineComponent, ref } from "vue";
@@ -64,11 +65,22 @@ export default defineComponent({
     const id = ref(-1);
     const username = ref("");
     const password = ref("");
+    const user = ref<UserType>({
+      id: -1,
+      username: "",
+      password: "",
+    });
     const store = useStore();
     const presenter = new RegisterFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IRegisterForm>
     );
     const passwordConfirm = ref("");
+    const setUser = (newUser: UserType) => {
+      user.value = newUser;
+    };
+    const getUser = () => {
+      return user.value;
+    };
     const getId = () => {
       return id.value;
     };
@@ -87,18 +99,24 @@ export default defineComponent({
     const submitRegister = () => {
       presenter.newUser();
     };
+    const showError = (error: string) => {
+      console.log(error);
+    };
     return {
       username,
       password,
       passwordConfirm,
       store,
       presenter,
+      setUser,
+      getUser,
       getId,
       getUsername,
       getPassword,
       getPasswordConfirm,
       getStore,
       submitRegister,
+      showError,
     };
   },
 });
