@@ -6,7 +6,10 @@
     :color="color"
     :elevation="5"
   >
-    <p class="message text-h6">{{ message }}</p>
+    <v-sheet width="5" :color="borderColor"></v-sheet>
+    <v-sheet :color="color">
+      <p class="message text-h6">{{ message }}</p>
+    </v-sheet>
   </v-sheet>
 </template>
 
@@ -33,7 +36,20 @@ export default defineComponent({
           return "";
       }
     });
-    return { color };
+    const borderColor = computed(() => {
+      switch (props.type) {
+        case "success":
+          return "green-darken-3";
+        case "fail":
+          return "red-darken-4";
+        case "warning":
+          return "yellow-darken-3";
+        default:
+          console.log("Wrong notification type!");
+          return "";
+      }
+    });
+    return { color, borderColor };
   },
 });
 </script>
@@ -43,6 +59,5 @@ export default defineComponent({
   position: absolute;
   top: 5px;
   right: 5px;
-  border-left: 5px solid #008c25;
 }
 </style>
