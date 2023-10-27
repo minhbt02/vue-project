@@ -12,19 +12,28 @@ export class EditTodoFormPresenter {
   public async updateTodo(): Promise<void> {
     const todosCopy = this.view.getTodos().slice();
     try {
-      todosCopy[this.view.getIndex()] = this.view.getTodo();
-      await this.interactor.updateTodo(this.view.getTodo());
-      this.view.$emit("update:todos", todosCopy);
+      await this.interactor.updateTodo(this.view.getTodo()).then(() => {
+        todosCopy[this.view.getIndex()] = this.view.getTodo();
+        this.view.$emit("update:todos", todosCopy);
+        this.view.setPopUpType("success");
+        this.view.setPopUpMessage("Successully edited todo");
+        this.view.getStore().commit("showPopUp");
+      });
     } catch (error: any) {
       if (error instanceof DataError) {
-        this.view.showError("Data is empty");
+        this.view.showError(error.message, "warning");
       } else if (error instanceof BadRequestError) {
-        this.view.showError("Invalid response from the repository");
+        this.view.showError("Invalid response from the repository", "fail");
       } else if (error instanceof NotFoundError) {
-        this.view.showError("Todo not found");
+        this.view.showError("Todo not found", "fail");
       } else {
-        this.view.showError("System Error");
+        this.view.showError("System Error", "fail");
       }
     }
+  }
+  public displayError(error: string, type: string) {
+    this.view.setPopUpMessage(error);
+    this.view.setPopUpType(type);
+    this.view.getStore().commit("showPopUp");
   }
 }

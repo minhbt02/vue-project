@@ -21,23 +21,26 @@ export class LoginFormPresenter {
         });
         if (user) {
           this.view.setId(user.id);
-          this.view.$emit("update:login-chosen", false);
           this.view.getStore().commit("login", this.view.getId());
           this.view.getRouter().push({ name: "todos" });
         } else {
-          this.view.$emit("update:login-chosen", false);
+          const error = new NotFoundError("Wrong username or password");
+          this.view.showError(error.message);
         }
       })
       .catch((error: any) => {
         if (error instanceof DataError) {
-          this.view.showError("Data is empty");
+          this.view.showError("Data error");
         } else if (error instanceof BadRequestError) {
           this.view.showError("Invalid response from the repository");
-        } else if (error instanceof NotFoundError) {
-          this.view.showError("Todo not found");
         } else {
           this.view.showError("System Error");
         }
       });
+  }
+  public displayError(error: string) {
+    this.view.setPopUpType("fail");
+    this.view.setPopUpMessage(error);
+    this.view.getStore().commit("showPopUp");
   }
 }

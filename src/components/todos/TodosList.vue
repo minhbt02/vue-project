@@ -55,7 +55,7 @@
       </div>
       <v-sheet
         class="bg-grey-lighten-2 rounded-xl d-flex justify-center align-center"
-        height="400"
+        height="460"
         v-else
       >
         <h2 class="text-center">No Todo Found</h2>
@@ -72,7 +72,7 @@
     </div>
     <v-sheet
       class="bg-grey-lighten-2 rounded-xl d-flex justify-center align-center"
-      height="400"
+      height="460"
       v-else
     >
       <h2 class="text-center">Failed To Load Todos</h2>
@@ -159,6 +159,12 @@ export default defineComponent({
     const loginSuccess = computed(() => {
       return store.state.loginSuccess;
     });
+    const setPopUpType = (type: string) => {
+      popUpType.value = type;
+    };
+    const setPopUpMessage = (message: string) => {
+      popUpMessage.value = message;
+    };
     const setTodos = (todosList: TodoType[]) => {
       todos.value = todosList;
     };
@@ -202,9 +208,7 @@ export default defineComponent({
       return page.value;
     };
     const showError = (error: string) => {
-      popUpMessage.value = error;
-      popUpType.value = "fail";
-      store.commit("showError");
+      presenter.displayError(error);
     };
     const pageChange = () => {
       presenter.handleChanges();
@@ -246,6 +250,8 @@ export default defineComponent({
       showCompleted,
       page,
       loginSuccess,
+      setPopUpType,
+      setPopUpMessage,
       setTodos,
       setTodoItem,
       setTodosLoaded,

@@ -44,6 +44,11 @@
         </div>
       </form>
     </v-sheet>
+    <PopUpNotification
+      :type="popUpType"
+      :message="popUpMessage"
+      v-if="store.state.displayPopUp"
+    />
   </div>
 </template>
 
@@ -55,6 +60,7 @@ import { ComponentPublicInstance } from "vue";
 import { getCurrentInstance } from "vue";
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
+import PopUpNotification from "../common/PopUpNotification.vue";
 export default defineComponent({
   name: "RegisterForm",
   props: {
@@ -62,9 +68,9 @@ export default defineComponent({
     back: Function,
   },
   setup() {
-    const id = ref(-1);
-    const username = ref("");
-    const password = ref("");
+    const id = ref<number>(-1);
+    const username = ref<string>("");
+    const password = ref<string>("");
     const user = ref<UserType>({
       id: -1,
       username: "",
@@ -74,9 +80,17 @@ export default defineComponent({
     const presenter = new RegisterFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IRegisterForm>
     );
-    const passwordConfirm = ref("");
+    const passwordConfirm = ref<string>("");
+    const popUpType = ref<string>("");
+    const popUpMessage = ref<string>("");
     const setUser = (newUser: UserType) => {
       user.value = newUser;
+    };
+    const setPopUpType = (type: string) => {
+      popUpType.value = type;
+    };
+    const setPopUpMessage = (message: string) => {
+      popUpMessage.value = message;
     };
     const getUser = () => {
       return user.value;
@@ -99,8 +113,8 @@ export default defineComponent({
     const submitRegister = () => {
       presenter.newUser();
     };
-    const showError = (error: string) => {
-      console.log(error);
+    const showError = (error: string, type: string) => {
+      presenter.displayError(error, type);
     };
     return {
       username,
@@ -108,7 +122,11 @@ export default defineComponent({
       passwordConfirm,
       store,
       presenter,
+      popUpType,
+      popUpMessage,
       setUser,
+      setPopUpType,
+      setPopUpMessage,
       getUser,
       getId,
       getUsername,
@@ -119,5 +137,6 @@ export default defineComponent({
       showError,
     };
   },
+  components: { PopUpNotification },
 });
 </script>

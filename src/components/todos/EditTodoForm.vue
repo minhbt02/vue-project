@@ -30,6 +30,7 @@ import { EditTodoFormPresenter } from "@/presenters/EditTodoFormPresenter";
 import { getCurrentInstance } from "vue";
 import { defineComponent, ref, ComponentPublicInstance } from "vue";
 import { PropType } from "vue";
+import { useStore } from "vuex";
 export default defineComponent({
   name: "EditTodoForm",
   props: {
@@ -48,6 +49,7 @@ export default defineComponent({
   },
   emits: ["update:todos", "update:todo"],
   setup(props) {
+    const store = useStore();
     const presenter = new EditTodoFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IEditTodoForm>
     );
@@ -58,6 +60,11 @@ export default defineComponent({
       name: props.todo.name,
       done: props.todo.done,
     });
+    const popUpType = ref<string>("");
+    const popUpMessage = ref<string>("");
+    const getStore = () => {
+      return store;
+    };
     const getTodos = () => {
       return props.todos;
     };
@@ -73,12 +80,15 @@ export default defineComponent({
     const saveTodo = () => {
       presenter.updateTodo();
     };
-    const showError = (error: string) => {
-      console.log(error);
+    const showError = (error: string, type: string) => {
+      presenter.displayError(error, type);
     };
     return {
       name,
       presenter,
+      popUpType,
+      popUpMessage,
+      getStore,
       getTodos,
       getIndex,
       getTodo,

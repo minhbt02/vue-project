@@ -19,18 +19,19 @@
     <PopUpNotification
       type="success"
       message="Successfully registered!"
-      v-if="displayPopUp"
+      v-if="store.state.registerSuccess"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import AuthOptions from "@/components/home/AuthOptions.vue";
 import LoginForm from "@/components/home/LoginForm.vue";
 import RegisterForm from "@/components/home/RegisterForm.vue";
 import PopUpNotification from "@/components/common/PopUpNotification.vue";
 import { useStore } from "vuex";
+import { onMounted } from "vue";
 
 export default defineComponent({
   name: "HomeView",
@@ -38,17 +39,17 @@ export default defineComponent({
     const loginChosen = ref(false);
     const registerChosen = ref(false);
     const store = useStore();
-    const displayPopUp = computed(() => {
-      return store.state.registerSuccess;
-    });
     const back = () => {
       loginChosen.value = false;
       registerChosen.value = false;
     };
+    onMounted(() => {
+      store.commit("resetPopUp");
+    });
     return {
       loginChosen,
       registerChosen,
-      displayPopUp,
+      store,
       back,
     };
   },

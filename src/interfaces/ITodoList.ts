@@ -9,6 +9,8 @@ export interface ITodoList {
   getDisplayedTodos(): TodoType[];
   getLength(): number;
   getPage(): number;
+  setPopUpType(type: string): () => void;
+  setPopUpMessage(message: string): () => void;
   setTodos(todos: TodoType[]): () => void;
   setTodoItem(todo: TodoType): () => void;
   setTodosLoaded(): () => void;

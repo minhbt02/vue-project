@@ -32,8 +32,8 @@ export class Todo {
     return this._name;
   }
   public setName(name: string): void {
-    if (name.length > 50) {
-      throw new DataError();
+    if (name.length > 60 || name.length === 0) {
+      throw new DataError("Invalid todo name");
     }
     this._name = name;
   }

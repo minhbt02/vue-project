@@ -49,11 +49,14 @@ export default createStore({
         state.displayPopUp = false;
       }, 3000);
     },
-    showError(state) {
+    showPopUp(state) {
       state.displayPopUp = true;
       setTimeout(() => {
         state.displayPopUp = false;
       }, 3000);
+    },
+    resetPopUp(state) {
+      state.displayPopUp = false;
     },
   },
   actions: {},

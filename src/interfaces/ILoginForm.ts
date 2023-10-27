@@ -2,10 +2,9 @@ import { Router } from "vue-router";
 import { Store } from "vuex";
 
 export interface ILoginForm {
-  id: number,
-  username: string,
-  password: string,
   setId(id: number): () => void;
+  setPopUpType(type: string): () => void;
+  setPopUpMessage(message: string): () => void;
   getId(): () => number;
   getUsername(): string;
   getPassword(): string;

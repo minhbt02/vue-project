@@ -95,4 +95,9 @@ export class TodosListPresenter {
       }
     }
   }
+  public displayError(error: string) {
+    this.view.setPopUpType("fail");
+    this.view.setPopUpMessage(error);
+    this.view.getStore().commit("showPopUp");
+  }
 }

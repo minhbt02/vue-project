@@ -36,6 +36,11 @@
           </v-btn>
         </div>
       </form>
+      <PopUpNotification
+        :type="popUpType"
+        :message="popUpMessage"
+        v-if="store.state.displayPopUp"
+      />
     </v-sheet>
   </div>
 </template>
@@ -48,6 +53,7 @@ import { getCurrentInstance } from "vue";
 import { ComponentPublicInstance } from "vue";
 import { ILoginForm } from "@/interfaces/ILoginForm";
 import { useRouter } from "vue-router";
+import PopUpNotification from "../common/PopUpNotification.vue";
 export default defineComponent({
   name: "LoginForm",
   props: {
@@ -64,8 +70,16 @@ export default defineComponent({
     const password = ref<string>("");
     const store = useStore();
     const router = useRouter();
+    const popUpType = ref<string>("");
+    const popUpMessage = ref<string>("");
     const setId = (uid: number) => {
       id.value = uid;
+    };
+    const setPopUpType = (type: string) => {
+      popUpType.value = type;
+    };
+    const setPopUpMessage = (message: string) => {
+      popUpMessage.value = message;
     };
     const getId = () => {
       return id.value;
@@ -86,7 +100,7 @@ export default defineComponent({
       presenter.authenticate();
     };
     const showError = (error: string) => {
-      console.log(error);
+      presenter.displayError(error);
     };
     return {
       presenter,
@@ -95,7 +109,11 @@ export default defineComponent({
       id,
       username,
       password,
+      popUpType,
+      popUpMessage,
       setId,
+      setPopUpType,
+      setPopUpMessage,
       getId,
       getUsername,
       getPassword,
@@ -105,5 +123,6 @@ export default defineComponent({
       showError,
     };
   },
+  components: { PopUpNotification },
 });
 </script>

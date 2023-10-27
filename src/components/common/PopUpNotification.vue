@@ -1,14 +1,15 @@
 <template>
   <v-sheet
-    class="notification px-3 py-2 d-flex align-center"
+    class="notification d-flex align-center"
     height="70"
-    width="300"
+    width="350"
     :color="color"
     :elevation="5"
   >
-    <v-sheet width="5" :color="borderColor"></v-sheet>
+    <v-sheet :color="borderColor" height="70" class="px-1 py-2 text-h6">
+    </v-sheet>
     <v-sheet :color="color">
-      <p class="message text-h6">{{ message }}</p>
+      <p class="message px-3 py-2 text-h6">{{ message }}</p>
     </v-sheet>
   </v-sheet>
 </template>
@@ -31,6 +32,8 @@ export default defineComponent({
           return "red";
         case "warning":
           return "yellow";
+        case "":
+          return "";
         default:
           console.log("Wrong notification type!");
           return "";
@@ -59,5 +62,6 @@ export default defineComponent({
   position: absolute;
   top: 5px;
   right: 5px;
+  z-index: 9999;
 }
 </style>

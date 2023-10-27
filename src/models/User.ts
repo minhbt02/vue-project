@@ -25,7 +25,7 @@ export class User {
   }
   public setUsername(username: string): void {
     if (username.length < 6 && username.length > 20) {
-      throw new DataError();
+      throw new DataError("Invalid username");
     }
     this._username = username;
   }
@@ -34,7 +34,7 @@ export class User {
   }
   public setPassword(password: string): void {
     if (password.length < 6 && password.length > 32) {
-      throw new DataError();
+      throw new DataError("Invalid password");
     }
     this._password = password;
   }
