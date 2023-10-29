@@ -13,20 +13,11 @@ export class AddTodoFormPresenter {
     this.view.setName(name);
   }
   public async addTodo(): Promise<void> {
-    const todosCopy = this.view.getTodos().slice();
     try {
       await this.interactor.createTodo(this.view.getTodo()).then((data) => {
         this.view.setTodo(data);
-        todosCopy.push({
-          id: this.view.getTodo().id,
-          userId: this.view.getTodo().userId,
-          name: this.view.getTodo().name,
-          done: this.view.getTodo().done,
-        });
-        this.view.$emit("update:todos", todosCopy);
         this.view.setPopUpType("success");
         this.view.setPopUpMessage("Successully added todo");
-        this.view.getStore().commit("showPopUp");
       });
     } catch (error: any) {
       if (error instanceof DataError) {
@@ -39,10 +30,5 @@ export class AddTodoFormPresenter {
         this.view.showError("System Error", "fail");
       }
     }
-  }
-  public displayError(error: string, type: string) {
-    this.view.setPopUpType(type);
-    this.view.setPopUpMessage(error);
-    this.view.getStore().commit("showPopUp");
   }
 }

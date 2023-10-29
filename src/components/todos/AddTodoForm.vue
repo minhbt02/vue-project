@@ -47,7 +47,7 @@ export default defineComponent({
     },
   },
   emits: ["update:todos"],
-  setup(props) {
+  setup(props, context) {
     const name = ref("");
     const store = useStore();
     const todo = ref<TodoType>({
@@ -89,10 +89,22 @@ export default defineComponent({
       presenter.setName(name.value);
     };
     const submitAddTodo = () => {
-      presenter.addTodo();
+      presenter.addTodo().then(() => {
+        const todosCopy = props.todos;
+        todosCopy.push({
+          id: todo.value.id,
+          userId: todo.value.userId,
+          name: todo.value.name,
+          done: todo.value.done,
+        });
+        context.emit("update:todos", todosCopy);
+        store.commit("showPopUp");
+      });
     };
     const showError = (error: string, type: string) => {
-      presenter.displayError(error, type);
+      popUpType.value = type;
+      popUpMessage.value = error;
+      store.commit("showPopUp");
     };
     onMounted(() => {
       store.commit("resetPopUp");

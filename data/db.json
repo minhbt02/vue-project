@@ -22,7 +22,7 @@
       "id": 5,
       "userId": 0,
       "name": "Learn Ruby",
-      "done": false
+      "done": true
     },
     {
       "id": 6,
@@ -58,7 +58,7 @@
       "id": 13,
       "userId": 0,
       "name": "Learn C#",
-      "done": false
+      "done": true
     },
     {
       "id": 14,
