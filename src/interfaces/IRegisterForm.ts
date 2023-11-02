@@ -10,8 +10,6 @@ export interface IRegisterForm {
   getUsername(): string;
   getPassword(): string;
   getPasswordConfirm(): string;
-  getStore(): Store<any>;
   showError(error: string, type: string): () => void;
-  $emit(event: string, ...args: any[]): () => void;
   submitRegister(): () => void;
 }

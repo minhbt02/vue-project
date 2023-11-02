@@ -1,8 +1,6 @@
 import { TodoType } from "@/repo/services/todo.service";
-import { Store } from "vuex";
 
 export interface ITodoList {
-  getStore(): Store<any>,
   getTodos(): TodoType[];
   getShowCompleted(): boolean;
   getFilteredTodos(): TodoType[];

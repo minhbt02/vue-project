@@ -12,5 +12,4 @@ export interface IAddTodoForm {
   getNewId(): number;
   getName(): string;
   showError(error: string, type: string): () => void;
-  $emit(event: string, ...args: any[]): () => void;
 }
