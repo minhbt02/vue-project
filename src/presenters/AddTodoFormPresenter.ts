@@ -1,5 +1,6 @@
 import { TodoInteractor } from "@/interactors/TodoInteractor";
 import { IAddTodoForm } from "@/interfaces/IAddTodoForm";
+import { TodoType } from "@/repo/services/todo.service";
 import { DataError, BadRequestError, NotFoundError } from "@/utils/error";
 
 export class AddTodoFormPresenter {
@@ -9,16 +10,9 @@ export class AddTodoFormPresenter {
     this.view = view;
     this.interactor = interactor ?? new TodoInteractor();
   }
-  public setName(name: string) {
-    this.view.setName(name);
-  }
-  public async addTodo(): Promise<void> {
+  public async addTodo(): Promise<TodoType> {
     try {
-      await this.interactor.createTodo(this.view.getTodo()).then((data) => {
-        this.view.setTodo(data);
-        this.view.setPopUpType("success");
-        this.view.setPopUpMessage("Successully added todo");
-      });
+      return await this.interactor.createTodo(this.view.getTodo());
     } catch (error: any) {
       if (error instanceof DataError) {
         this.view.showError(error.message, "warning");
@@ -29,6 +23,7 @@ export class AddTodoFormPresenter {
       } else {
         this.view.showError("System Error", "fail");
       }
+      return { id: -1, userId: -1, name: "", done: false };
     }
   }
 }

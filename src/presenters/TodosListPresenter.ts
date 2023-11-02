@@ -13,14 +13,9 @@ export class TodosListPresenter {
   public setTodo(todo: TodoType): void {
     this.view.setTodoItem(todo);
   }
-  public async all(): Promise<TodoType[] | void> {
+  public async all(uid: number): Promise<TodoType[]> {
     try {
-      const uid = this.view.getStore().state.uid;
-      return await this.interactor.all(uid).then((data) => {
-        this.view.setTodos(data);
-        this.view.setTodosLoaded();
-        this.handleChanges();
-      });
+      return await this.interactor.all(uid);
     } catch (error: any) {
       if (error instanceof DataError) {
         this.view.showError("Data is empty");
@@ -31,6 +26,7 @@ export class TodosListPresenter {
       } else {
         this.view.showError("System Error");
       }
+      return [];
     }
   }
   public handleChanges() {
@@ -60,10 +56,9 @@ export class TodosListPresenter {
   public calcLength(): number {
     return Math.ceil(this.view.getFilteredTodos().length / 4);
   }
-  public todoCompleted(todo: TodoType): void {
+  public async todoCompleted(todo: TodoType): Promise<TodoType | void> {
     try {
-      this.interactor.updateTodo(todo);
-      this.handleChanges();
+      return await this.interactor.updateTodo(todo);
     } catch (error: any) {
       if (error instanceof DataError) {
         this.view.showError("Data is empty");
@@ -74,15 +69,12 @@ export class TodosListPresenter {
       } else {
         this.view.showError("System Error");
       }
+      return todo;
     }
   }
-  public removeTodo(id: number): void {
+  public async removeTodo(todo: TodoType): Promise<TodoType> {
     try {
-      this.view.setTodos(
-        this.view.getTodos().filter((t: TodoType) => t.id !== id)
-      );
-      this.interactor.deleteTodo(id);
-      this.handleChanges();
+      return await this.interactor.deleteTodo(todo.id);
     } catch (error: any) {
       if (error instanceof DataError) {
         this.view.showError("Data is empty");
@@ -93,11 +85,7 @@ export class TodosListPresenter {
       } else {
         this.view.showError("System Error");
       }
+      return todo;
     }
-  }
-  public displayError(error: string) {
-    this.view.setPopUpType("fail");
-    this.view.setPopUpMessage(error);
-    this.view.getStore().commit("showPopUp");
   }
 }

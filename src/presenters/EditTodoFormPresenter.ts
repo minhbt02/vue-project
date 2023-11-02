@@ -1,5 +1,6 @@
 import { TodoInteractor } from "@/interactors/TodoInteractor";
 import { IEditTodoForm } from "@/interfaces/IEditTodoForm";
+import { TodoType } from "@/repo/services/todo.service";
 import { DataError, BadRequestError, NotFoundError } from "@/utils/error";
 
 export class EditTodoFormPresenter {
@@ -9,16 +10,9 @@ export class EditTodoFormPresenter {
     this.view = view;
     this.interactor = interactor ?? new TodoInteractor();
   }
-  public async updateTodo(): Promise<void> {
-    const todosCopy = this.view.getTodos().slice();
+  public async updateTodo(): Promise<TodoType> {
     try {
-      await this.interactor.updateTodo(this.view.getTodo()).then(() => {
-        todosCopy[this.view.getIndex()] = this.view.getTodo();
-        this.view.$emit("update:todos", todosCopy);
-        this.view.setPopUpType("success");
-        this.view.setPopUpMessage("Successully edited todo");
-        this.view.getStore().commit("showPopUp");
-      });
+      return await this.interactor.updateTodo(this.view.getTodo());
     } catch (error: any) {
       if (error instanceof DataError) {
         this.view.showError(error.message, "warning");
@@ -29,11 +23,12 @@ export class EditTodoFormPresenter {
       } else {
         this.view.showError("System Error", "fail");
       }
+      return {
+        id: this.view.getId(),
+        userId: this.view.getUserId(),
+        name: this.view.getName(),
+        done: this.view.getDone(),
+      };
     }
-  }
-  public displayError(error: string, type: string) {
-    this.view.setPopUpMessage(error);
-    this.view.setPopUpType(type);
-    this.view.getStore().commit("showPopUp");
   }
 }
