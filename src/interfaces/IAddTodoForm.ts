@@ -6,7 +6,6 @@ export interface IAddTodoForm {
   setTodo(todo: TodoType): () => void;
   setPopUpType(type: string): () => void;
   setPopUpMessage(message: string): () => void;
-  getStore(): Store<any>;
   getTodos(): TodoType[];
   getTodo(): TodoType;
   getNewId(): number;
