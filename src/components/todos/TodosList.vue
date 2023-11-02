@@ -55,7 +55,7 @@
       </div>
       <v-sheet
         class="bg-grey-lighten-2 rounded-xl d-flex justify-center align-center"
-        height="460"
+        height="400"
         v-else
       >
         <h2 class="text-center">No Todo Found</h2>
@@ -207,8 +207,10 @@ export default defineComponent({
     const getPage = () => {
       return page.value;
     };
-    const showError = (error: string) => {
-      presenter.displayError(error);
+    const showError = (error: string, type: string) => {
+      setPopUpType(type);
+      setPopUpMessage(error);
+      store.commit("showPopUp");
     };
     const pageChange = () => {
       presenter.handleChanges();
@@ -224,16 +226,27 @@ export default defineComponent({
       presenter.handleChanges();
     };
     const handleCompletedTodo = (todo: TodoType) => {
-      presenter.todoCompleted(todo);
+      presenter.todoCompleted(todo).then(() => {
+        presenter.handleChanges();
+        showError("Changed todo completed", "success");
+      });
     };
     const handleDeletedTodo = (todo: TodoType) => {
-      presenter.removeTodo(todo.id);
+      presenter.removeTodo(todo).then((data) => {
+        setTodos(todos.value.filter((t: TodoType) => t.id !== todo.id));
+        presenter.handleChanges();
+        showError("Deleted todo", "success");
+      });
     };
     const handleShowCompleted = () => {
       presenter.handleChanges();
     };
     onMounted(() => {
-      presenter.all();
+      presenter.all(store.state.uid).then((data) => {
+        setTodos(data);
+        setTodosLoaded();
+        presenter.handleChanges();
+      });
     });
     return {
       presenter,

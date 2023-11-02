@@ -61,20 +61,23 @@ import { getCurrentInstance } from "vue";
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import PopUpNotification from "../common/PopUpNotification.vue";
+import { computed } from "vue";
 export default defineComponent({
   name: "RegisterForm",
   props: {
     registerChosen: Boolean,
     back: Function,
   },
-  setup() {
+  setup(_, context) {
     const id = ref<number>(-1);
     const username = ref<string>("");
     const password = ref<string>("");
-    const user = ref<UserType>({
-      id: -1,
-      username: "",
-      password: "",
+    const user = computed(() => {
+      return {
+        id: id.value,
+        username: username.value,
+        password: password.value,
+      } as UserType;
     });
     const store = useStore();
     const presenter = new RegisterFormPresenter(
@@ -83,9 +86,6 @@ export default defineComponent({
     const passwordConfirm = ref<string>("");
     const popUpType = ref<string>("");
     const popUpMessage = ref<string>("");
-    const setUser = (newUser: UserType) => {
-      user.value = newUser;
-    };
     const setPopUpType = (type: string) => {
       popUpType.value = type;
     };
@@ -107,14 +107,30 @@ export default defineComponent({
     const getPasswordConfirm = () => {
       return passwordConfirm.value;
     };
-    const getStore = () => {
-      return store;
-    };
     const submitRegister = () => {
-      presenter.newUser();
+      if (password.value === passwordConfirm.value) {
+        presenter.getAll().then((returnData) => {
+          if (
+            returnData.find((element) => {
+              return getUsername() === element.username;
+            })
+          ) {
+            showError("Existed username", "fail");
+          } else {
+            presenter.newUser().then(() => {
+              store.commit("register");
+              context.emit("update:register-chosen", false);
+            });
+          }
+        });
+      } else {
+        showError("Passwords don't match", "warning");
+      }
     };
     const showError = (error: string, type: string) => {
-      presenter.displayError(error, type);
+      setPopUpType(type);
+      setPopUpMessage(error);
+      store.commit("showPopUp");
     };
     return {
       username,
@@ -124,7 +140,6 @@ export default defineComponent({
       presenter,
       popUpType,
       popUpMessage,
-      setUser,
       setPopUpType,
       setPopUpMessage,
       getUser,
@@ -132,7 +147,6 @@ export default defineComponent({
       getUsername,
       getPassword,
       getPasswordConfirm,
-      getStore,
       submitRegister,
       showError,
     };

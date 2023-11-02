@@ -48,7 +48,7 @@ export default defineComponent({
     },
   },
   emits: ["update:todos", "update:todo"],
-  setup(props) {
+  setup(props, context) {
     const store = useStore();
     const presenter = new EditTodoFormPresenter(
       getCurrentInstance()?.proxy as ComponentPublicInstance<IEditTodoForm>
@@ -62,8 +62,17 @@ export default defineComponent({
     });
     const popUpType = ref<string>("");
     const popUpMessage = ref<string>("");
-    const getStore = () => {
-      return store;
+    const getId = () => {
+      return props.todo.id;
+    };
+    const getUserId = () => {
+      return props.todo.userId;
+    };
+    const getName = () => {
+      return props.todo.name;
+    };
+    const getDone = () => {
+      return props.todo.done;
     };
     const getTodos = () => {
       return props.todos;
@@ -77,18 +86,36 @@ export default defineComponent({
     const setName = (newName: string) => {
       newTodo.value.name = newName;
     };
+    const setPopUpType = (type: string) => {
+      popUpType.value = type;
+    };
+    const setPopUpMessage = (message: string) => {
+      popUpMessage.value = message;
+    };
     const saveTodo = () => {
-      presenter.updateTodo();
+      presenter.updateTodo().then((data) => {
+        const todosCopy = getTodos().slice();
+        todosCopy[getIndex()] = data as TodoType;
+        context.emit("update:todos", todosCopy);
+        setPopUpType("success");
+        setPopUpMessage("Successully edited todo");
+        store.commit("showPopUp");
+      });
     };
     const showError = (error: string, type: string) => {
-      presenter.displayError(error, type);
+      popUpType.value = type;
+      popUpMessage.value = error;
+      store.commit("showPopUp");
     };
     return {
       name,
       presenter,
       popUpType,
       popUpMessage,
-      getStore,
+      getId,
+      getUserId,
+      getName,
+      getDone,
       getTodos,
       getIndex,
       getTodo,

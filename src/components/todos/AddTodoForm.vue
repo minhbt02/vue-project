@@ -86,18 +86,21 @@ export default defineComponent({
       return name.value;
     };
     const nameChange = () => {
-      presenter.setName(name.value);
+      setName(name.value);
     };
     const submitAddTodo = () => {
-      presenter.addTodo().then(() => {
+      presenter.addTodo().then((data) => {
         const todosCopy = props.todos;
         todosCopy.push({
-          id: todo.value.id,
-          userId: todo.value.userId,
-          name: todo.value.name,
-          done: todo.value.done,
+          id: data.id,
+          userId: data.userId,
+          name: data.name,
+          done: data.done,
         });
         context.emit("update:todos", todosCopy);
+        setPopUpType("success");
+        setPopUpMessage("Successully added todo");
+        setTodo(data);
         store.commit("showPopUp");
       });
     };

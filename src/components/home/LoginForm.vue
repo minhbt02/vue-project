@@ -90,17 +90,27 @@ export default defineComponent({
     const getPassword = () => {
       return password.value;
     };
-    const getStore = () => {
-      return store;
-    };
-    const getRouter = () => {
-      return router;
-    };
     const submitLogin = () => {
-      presenter.authenticate();
+      presenter.authenticate().then((returnData) => {
+        const user = returnData.find((element) => {
+          return (
+            getUsername() === element.username &&
+            getPassword() === element.password
+          );
+        });
+        if (user) {
+          setId(user.id);
+          store.commit("login", getId());
+          router.push({ name: "todos" });
+        } else {
+          showError("Wrong username or password");
+        }
+      });
     };
     const showError = (error: string) => {
-      presenter.displayError(error);
+      setPopUpType("fail");
+      setPopUpMessage(error);
+      store.commit("showPopUp");
     };
     return {
       presenter,
@@ -117,8 +127,6 @@ export default defineComponent({
       getId,
       getUsername,
       getPassword,
-      getStore,
-      getRouter,
       submitLogin,
       showError,
     };
