@@ -15,30 +15,35 @@ describe("AddTodoForm", () => {
       mockImpl: jest.fn().mockResolvedValue({ id: 1, userId: 1, name: "New Todo", done: false }),
       expected: { id: 1, userId: 1, name: "New Todo", done: false },
       mockTodo: jest.fn().mockReturnValue({ id: 1, userId: 1, name: "New Todo", done: false }),
+      callTimes: 0,
     },
     {
       testname: "should return BadRequestError",
       mockImpl: jest.fn().mockRejectedValue(new BadRequestError()),
-      expected: new BadRequestError(),
+      expected: { id: -1, userId: -1, name: "", done: false },
       mockTodo: jest.fn().mockReturnValue({ id: 1, userId: 1, name: "New Todo", done: false }),
+      callTimes: 1,
     },
     {
       testname: "should return DataBaseError",
       mockImpl: jest.fn().mockRejectedValue(new DataBaseError("DataBaseError: Failed to add todo")),
-      expected: new DataBaseError("DataBaseError: Failed to add todo"),
+      expected: { id: -1, userId: -1, name: "", done: false },
       mockTodo: jest.fn().mockReturnValue({ id: 1, userId: 1, name: "New Todo", done: false }),
+      callTimes: 1,
     },
     {
       testname: "should return DataError",
       mockImpl: jest.fn().mockRejectedValue(new DataError("DataError: Failed to add todo")),
-      expected: new DataError("DataError: Failed to add todo"),
+      expected: { id: -1, userId: -1, name: "", done: false },
       mockTodo: jest.fn().mockReturnValue({ id: 1, userId: 1, name: "New Todo", done: false }),
+      callTimes: 1,
     },
     {
       testname: "should return NotFoundError",
       mockImpl: jest.fn().mockRejectedValue(new NotFoundError("NotFoundError: Failed to add todo")),
-      expected: new NotFoundError("NotFoundError: Failed to add todo"),
+      expected: { id: -1, userId: -1, name: "", done: false },
       mockTodo: jest.fn().mockReturnValue({ id: 1, userId: 1, name: "New Todo", done: false }),
+      callTimes: 1,
     },
   ];
 
@@ -74,15 +79,16 @@ describe("AddTodoForm", () => {
         // Arrange
         service.createTodo = tc.mockImpl;
         view.getTodo = tc.mockTodo;
-        try {
+        // try {
           // Act
           const actual = await sut.addTodo();
           // Assert
           expect(actual).toEqual(tc.expected);
-        } catch (error) {
-          console.log(error);
-          expect(error).toEqual(tc.expected);
-        }
+        // } catch (error) {
+          // console.log(error);
+          // expect(error).toEqual(tc.expected);
+          expect(view.showError).toBeCalledTimes(tc.callTimes);
+        // }
       });
     })
   });
