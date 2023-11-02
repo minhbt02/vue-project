@@ -28,22 +28,22 @@ export class UserInteractor {
       throw error;
     }
   }
-  public async updateUser(user: UserType): Promise<void> {
+  public async updateUser(user: UserType): Promise<UserType> {
     try { // eslint-disable-line
       const newUser = new User();
       newUser.setId(user.id);
       newUser.setUsername(user.username);
       newUser.setPassword(user.password);
-      this.userService.updateUser(newUser.getModel());
+      return await this.userService.updateUser(newUser.getModel());
     } catch (error) {
       throw error;
     }
   }
-  public async deleteUser(user: UserType): Promise<void> {
+  public async deleteUser(user: UserType): Promise<UserType> {
     try { // eslint-disable-line
       const newUser = new User();
       newUser.setId(user.id);
-      this.userService.deleteUser(newUser.getModel());
+      return await this.userService.deleteUser(newUser.getModel());
     } catch (error) {
       throw error;
     }
