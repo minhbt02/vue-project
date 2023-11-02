@@ -104,33 +104,33 @@ describe("TodoInteractor", () => {
   const testCasesDeleteTodo = [
     {
       testname: "should return new todo",
-      mockImpl: jest.fn().mockResolvedValue({ id: 1, userId: 1, name: "New Todo", done: false }),
-      expected: { id: 1, userId: 1, name: "New Todo", done: false },
-      todoType: { id: 1, userId: 1, name: "New Todo", done: false },
+      mockImpl: jest.fn().mockResolvedValue({ id: 1, userId: 1, name: "Deleted Todo", done: false }),
+      expected: { id: 1, userId: 1, name: "Deleted Todo", done: false },
+      todoType: { id: 1, userId: 1, name: "Deleted Todo", done: false },
     },
     {
       testname: "should return BadRequestError",
       mockImpl: jest.fn().mockRejectedValue(new BadRequestError()),
       expected: new BadRequestError(),
-      todoType: { id: 1, userId: 1, name: "New Todo", done: false },
+      todoType: { id: 1, userId: 1, name: "Deleted Todo", done: false },
     },
     {
       testname: "should return DataBaseError",
       mockImpl: jest.fn().mockRejectedValue(new DataBaseError("DataBaseError: Failed to delete todo")),
       expected: new DataBaseError("DataBaseError: Failed to delete todo"),
-      todoType: { id: 1, userId: 1, name: "New Todo", done: false },
+      todoType: { id: 1, userId: 1, name: "Deleted Todo", done: false },
     },
     {
       testname: "should return DataError",
       mockImpl: jest.fn().mockRejectedValue(new DataError("DataError: Failed to delete todo")),
       expected: new DataError("DataError: Failed to delete todo"),
-      todoType: { id: 1, userId: 1, name: "New Todo", done: false },
+      todoType: { id: 1, userId: 1, name: "Deleted Todo", done: false },
     },
     {
       testname: "should return NotFoundError",
       mockImpl: jest.fn().mockRejectedValue(new NotFoundError("NotFoundError: Failed to delete todo")),
       expected: new NotFoundError("NotFoundError: Failed to delete todo"),
-      todoType: { id: 1, userId: 1, name: "New Todo", done: false },
+      todoType: { id: 1, userId: 1, name: "Deleted Todo", done: false },
     },
   ];
 
@@ -142,7 +142,7 @@ describe("TodoInteractor", () => {
       deleteTodo: jest.fn(),
     };
     sut = new TodoInteractor(service);
-  })
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -156,9 +156,9 @@ describe("TodoInteractor", () => {
         try {
           // Act
           const actual = await sut.all(tc.userId);
+          // Assert
           expect(tc.expected).toEqual(actual);
         } catch (error) {
-          // Assert
           expect(error).toEqual(tc.expected);
         }
       });
@@ -168,9 +168,12 @@ describe("TodoInteractor", () => {
   describe("test createTodo() method", () => {
     testCasesCreateTodo.forEach(async (tc) => {
       it(tc.testname, async () => {
+        // Arrange
         service.createTodo = tc.mockImpl;
         try {
+          // Act
           const actual = await sut.createTodo(tc.todoType);
+          // Assert
           expect(tc.expected).toEqual(actual);
         } catch (error) {
           expect(error).toEqual(tc.expected);
@@ -182,9 +185,12 @@ describe("TodoInteractor", () => {
   describe("test updateTodo() method", () => {
     testCasesUpdateTodo.forEach(async (tc) => {
       it(tc.testname, async () => {
+        // Arrange
         service.createTodo = tc.mockImpl;
         try {
+          // Act
           const actual = await sut.createTodo(tc.todoType);
+          // Assert
           expect(tc.expected).toEqual(actual);
         } catch (error) {
           expect(error).toEqual(tc.expected);
@@ -196,9 +202,12 @@ describe("TodoInteractor", () => {
   describe("test deleteTodo() method", () => {
     testCasesDeleteTodo.forEach(async (tc) => {
       it(tc.testname, async () => {
+        // Arrange
         service.createTodo = tc.mockImpl;
         try {
+          // Act
           const actual = await sut.createTodo(tc.todoType);
+          // Assert
           expect(tc.expected).toEqual(actual);
         } catch (error) {
           expect(error).toEqual(tc.expected);
