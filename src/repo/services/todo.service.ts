@@ -11,8 +11,8 @@ export type TodoType = {
 export interface ITodoService {
   all(uid: number): Promise<TodoType[]>;
   createTodo(todo: TodoType): Promise<TodoType>;
-  updateTodo(todo: TodoType): Promise<void>;
-  deleteTodo(id: number): Promise<void>;
+  updateTodo(todo: TodoType): Promise<TodoType>;
+  deleteTodo(id: number): Promise<TodoType>;
 }
 
 export class TodoService implements ITodoService {
@@ -61,30 +61,34 @@ export class TodoService implements ITodoService {
       }
     }
   }
-  public async updateTodo(todo: TodoType): Promise<void> {
-    try {
-      const res = await request.put(`/todos/${todo.id}`, todo);
-      if (!res.data) {
-        throw new NotFoundError();
-      }
-    } catch (error: any) {
-      const status = error.response.status;
-      switch (status) {
-        case 400:
-          throw new BadRequestError();
-        case 404:
-          throw new NotFoundError();
-        default:
-          throw error;
-      }
+  public async updateTodo(todo: TodoType): Promise<TodoType> {
+    const res = await request
+      .put(`/todos/${todo.id}`, todo)
+      .catch((error: any) => {
+        const status = error.response.status;
+        switch (status) {
+          case 400:
+            throw new BadRequestError();
+          case 404:
+            throw new NotFoundError();
+          default:
+            throw error;
+        }
+      });
+    if (!res.data) {
+      throw new NotFoundError();
     }
+    const data: TodoType = res.data;
+    return data;
   }
-  public async deleteTodo(id: number): Promise<void> {
+  public async deleteTodo(id: number): Promise<TodoType> {
     try {
       const res = await request.delete(`/todos/${id}`);
       if (!res.data) {
         throw new NotFoundError();
       }
+      const data: TodoType = res.data;
+      return data;
     } catch (error: any) {
       const status = error.reponse.status;
       switch (status) {

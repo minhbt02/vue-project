@@ -9,7 +9,7 @@ export type UserType = {
 
 export interface IUserService {
   all(): Promise<UserType[]>;
-  createUser(user: UserType): Promise<void>;
+  createUser(user: UserType): Promise<UserType>;
   updateUser(user: UserType): Promise<void>;
   deleteUser(user: UserType): Promise<void>;
 }
@@ -35,7 +35,7 @@ export class UserService implements IUserService {
       }
     }
   }
-  public async createUser(user: UserType): Promise<void> {
+  public async createUser(user: UserType): Promise<UserType> {
     try {
       const newUser = {
         username: user.username,
@@ -45,6 +45,8 @@ export class UserService implements IUserService {
       if (!res.data) {
         throw new NotFoundError();
       }
+      const data: UserType = res.data;
+      return data;
     } catch (error: any) {
       const status = error.response.status;
       switch (status) {
