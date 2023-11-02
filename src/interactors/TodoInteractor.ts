@@ -28,21 +28,21 @@ export class TodoInteractor {
       throw error;
     }
   }
-  public async updateTodo(todo: TodoType): Promise<void> {
+  public async updateTodo(todo: TodoType): Promise<TodoType> {
     try { // eslint-disable-line
       const newTodo = new Todo();
       newTodo.setId(todo.id);
       newTodo.setUserId(todo.userId);
       newTodo.setName(todo.name);
       newTodo.setDone(todo.done);
-      this.todoService.updateTodo(newTodo.getModel());
+      return await this.todoService.updateTodo(newTodo.getModel());
     } catch (error) {
       throw error;
     }
   }
-  public async deleteTodo(id: number): Promise<void> {
+  public async deleteTodo(id: number): Promise<TodoType> {
     try { // eslint-disable-line
-      this.todoService.deleteTodo(id);
+      return await this.todoService.deleteTodo(id);
     } catch (error) {
       throw error;
     }

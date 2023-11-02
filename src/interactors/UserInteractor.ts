@@ -17,13 +17,13 @@ export class UserInteractor {
       throw error;
     }
   }
-  public async createUser(user: UserType): Promise<void> {
+  public async createUser(user: UserType): Promise<UserType> {
     try { // eslint-disable-line
       const newUser = new User();
       newUser.setId(user.id);
       newUser.setUsername(user.username);
       newUser.setPassword(user.password);
-      this.userService.createUser(newUser.getModel());
+      return this.userService.createUser(newUser.getModel());
     } catch (error) {
       throw error;
     }
