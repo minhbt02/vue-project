@@ -10,8 +10,8 @@ export type UserType = {
 export interface IUserService {
   all(): Promise<UserType[]>;
   createUser(user: UserType): Promise<UserType>;
-  updateUser(user: UserType): Promise<void>;
-  deleteUser(user: UserType): Promise<void>;
+  updateUser(user: UserType): Promise<UserType>;
+  deleteUser(user: UserType): Promise<UserType>;
 }
 
 export class UserService implements IUserService {
@@ -59,12 +59,14 @@ export class UserService implements IUserService {
       }
     }
   }
-  public async updateUser(user: UserType): Promise<void> {
+  public async updateUser(user: UserType): Promise<UserType> {
     try {
       const res = await request.put(`/user/${user.id}`, user);
       if (!res.data) {
         throw new NotFoundError();
       }
+      const data: UserType = res.data;
+      return data;
     } catch (error: any) {
       const status = error.response.status;
       switch (status) {
@@ -77,12 +79,14 @@ export class UserService implements IUserService {
       }
     }
   }
-  public async deleteUser(user: UserType): Promise<void> {
+  public async deleteUser(user: UserType): Promise<UserType> {
     try {
       const res = await request.delete(`/user/${user.id}`);
       if (!res.data) {
         throw new NotFoundError();
       }
+      const data: UserType = res.data;
+      return data;
     } catch (error: any) {
       const status = error.response.status;
       switch (status) {
