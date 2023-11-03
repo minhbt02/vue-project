@@ -44,14 +44,10 @@ describe("EditTodoFormPresenter", () => {
 
   beforeAll(() => {
     view = {
-      setPopUpType: jest.fn(),
-      setPopUpMessage: jest.fn(),
       getId: jest.fn(),
       getUserId: jest.fn(),
       getName: jest.fn(),
       getDone: jest.fn(),
-      getTodos: jest.fn(),
-      getIndex: jest.fn(),
       getTodo: jest.fn(),
       showError: jest.fn(),
     };

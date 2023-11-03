@@ -56,14 +56,7 @@ describe("AddTodoForm", () => {
     };
     interactor = new TodoInteractor(service);
     view = {
-      setName: jest.fn(),
-      setTodo: jest.fn(),
-      setPopUpType: jest.fn(),
-      setPopUpMessage: jest.fn(),
-      getTodos: jest.fn(),
       getTodo: jest.fn(),
-      getNewId: jest.fn(),
-      getName: jest.fn(),
       showError: jest.fn(),
     };
     sut = new AddTodoFormPresenter(view, interactor);
@@ -87,6 +80,7 @@ describe("AddTodoForm", () => {
         // } catch (error) {
           // console.log(error);
           // expect(error).toEqual(tc.expected);
+          expect(view.getTodo).toBeCalledTimes(1);
           expect(view.showError).toBeCalledTimes(tc.callTimes);
         // }
       });
